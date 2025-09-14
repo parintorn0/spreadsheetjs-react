@@ -60,9 +60,9 @@ const YourParentComponent = () => {
   )
 }
 ```
-# Props
+## Props
 
-## cells: `Array[][]`
+### cells: `Array[][]`
 
 `cell`.`value`: `String` value of this cell
 
