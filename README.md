@@ -11,7 +11,7 @@
 ## Basic Usage
 
 
-#### without passing any properties, it will generate sample spreadsheet
+### without passing any properties, it will generate sample spreadsheet
 ```
 import { Spreadsheet } from "spreadsheetjs-react"
 
@@ -24,11 +24,13 @@ export default YourParentComponent
 ```
 
 #### To pass `spreadsheet` properties, it must be passed all the required properties including
-#### `cells`: data in each cell,
-#### `rows_height`: height of each row,
-#### `cols_width`: width of each column
+`cells`: data in each cell,
 
-#### Example of empty 2x2 spreadsheet
+`rows_height`: height of each row,
+
+`cols_width`: width of each column
+
+### Example of empty 2x2 spreadsheet
 ```
 import { Spreadsheet } from "spreadsheetjs-react"
 
