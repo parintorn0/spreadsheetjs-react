@@ -1,0 +1,59 @@
+.table {
+    border-top: 1px solid transparent;
+    border-left: 1px solid transparent;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    table-layout: fixed;
+    border-collapse: separate;
+    width: min-content;
+    td {
+        padding: 0;
+    }
+    > thead {
+        > tr {
+            height: 50px;
+            > td {
+                cursor: cell;
+                border-top: 1px solid transparent;
+                border-left: 1px solid transparent;
+                border-right: 1px solid #ccc;
+                border-bottom: 1px solid #ccc;
+                &:not(.selected) {
+                    background-color: #f3f3f3;
+                }
+                &.selected {
+                    background-color: #dcdcdc;
+                }
+            }
+        }
+    }
+    > tbody {
+        > tr {
+            cursor: cell;
+            > td {
+                &:first-child {
+                    border-top: 1px solid transparent;
+                    border-left: 1px solid transparent;
+                    &:not(.selected) {
+                        background-color: #f3f3f3;
+                    }
+                    &.selected {
+                        background-color: #dcdcdc;
+                    }
+                }
+                &:not(:first-child){
+                    > input {
+                        border: none;
+                        border-radius: 0;
+                        outline: 0;
+                        margin: 0;
+                        padding: 0;
+                        padding-right: 2px;
+                        background-color: #ccc;
+                        box-shadow: border-box;
+                    }
+                }
+            }
+        }
+    }
+}
