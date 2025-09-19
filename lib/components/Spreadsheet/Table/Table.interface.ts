@@ -2,7 +2,7 @@ import type { Coordinate, SelectedCells, SpreadsheetData } from "../Spreadsheet.
 
 export interface TableProps {
     spreadsheetData: SpreadsheetData,
-    setSpreadsheetData: React.Dispatch<React.SetStateAction<SpreadsheetData>>
+    onChange: (spreadsheetData: SpreadsheetData) => void,
     editingCell: Coordinate | null,
     setEditingCell: React.Dispatch<React.SetStateAction<Coordinate | null>>,
     isDragging: boolean,

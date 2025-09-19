@@ -1,0 +1,25 @@
+.context-menu {
+    &.open {
+        display: flex;
+    }
+    &:not(.open) {
+        display: none;
+    }
+    position: fixed;
+    z-index: 1;
+    flex-direction: column;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    > button {
+        display: flex;
+        background-color: transparent;
+        border: none;
+        padding: 8px 12px;
+        text-align: left;
+        cursor: pointer;
+        &:hover {
+            background-color: #f3f3f3;
+        }
+    }
+}

@@ -1,0 +1,15 @@
+.cell {
+    overflow: hidden;
+    font-weight: normal;
+    &:global(.font-bold) { font-weight: bold; }
+    &:global(.text-left) { text-align: left; }
+    &:global(.text-center) { text-align: center; }
+    &:global(.text-right) { text-align: right; }
+    &:global(.text-top) { vertical-align: top; }
+    &:global(.text-middle) { vertical-align: middle; }
+    &:global(.text-bottom) { vertical-align: bottom; }
+    &:global(.selected) { box-shadow: -1px -1px 0px #ccc; }
+    &:global(.hidden) { display: none; }
+    input { background-color: transparent; }
+}
+

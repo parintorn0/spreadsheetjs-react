@@ -1,10 +1,5 @@
-import type { CellData, Coordinate, SelectedCells, SpreadsheetData } from "../../Spreadsheet.interface";
-import { findSelection, isSameCoordinate } from "../../Spreadsheet.util";
-
-interface CellDoubleClickProps {
-    setEditingCell: React.Dispatch<React.SetStateAction<Coordinate | null>>,
-    coordinate: Coordinate,
-}
+import { findSelection, isSameCoordinate } from "../../../Spreadsheet.util";
+import type { CellDoubleClickProps, CellDraggingProps, CellStartDraggingProps, CellValueChangedProps } from "./Cell.event.interface";
 
 export const cellDoubleClick = ({
     setEditingCell,
@@ -13,20 +8,15 @@ export const cellDoubleClick = ({
     setEditingCell(coordinate)
 }
 
-interface CellValueChangedProps {
-    value: string,
-    setSpreadsheetData: React.Dispatch<React.SetStateAction<SpreadsheetData>>,
-    coordinate: Coordinate
-}
-
 export const cellValueChanged = ({
     value,
-    setSpreadsheetData,
+    spreadsheetData,
+    onChange,
     coordinate,
 }: CellValueChangedProps) => {
-    setSpreadsheetData(prev=>({
-        ...prev,
-        cells: prev.cells.map((row, rowIndex) => (
+    onChange({
+        ...spreadsheetData,
+        cells: spreadsheetData.cells.map((row, rowIndex) => (
             row.map((col, colIndex) => {
                 const currentCoordinate = {
                     x: colIndex,
@@ -38,54 +28,31 @@ export const cellValueChanged = ({
                 } : col
             })
         ))
-    }))
-}
-
-interface CellStartDraggingProps {
-    e: React.MouseEvent<HTMLTableCellElement, MouseEvent>,
-    editingCell: Coordinate | null,
-    coordinate: Coordinate,
-    cells: Array<Array<CellData>>,
-    setIsDragging: React.Dispatch<React.SetStateAction<boolean>>,
-    setDraggingStartCell: React.Dispatch<React.SetStateAction<Coordinate>>,
-    setSelectedCells: React.Dispatch<React.SetStateAction<SelectedCells>>,
+    })
 }
 
 export const cellStartDragging = ({
-    e,
-    editingCell,
     coordinate,
-    cells,
+    spreadsheetData,
     setIsDragging,
     setDraggingStartCell,
     setSelectedCells,
 }: CellStartDraggingProps): void => {
-    if(isSameCoordinate(coordinate, editingCell)) {
-        e.preventDefault()
-    }
     const selection = findSelection({
         selectedCells: {
             start: coordinate,
             end: coordinate,
         },
-        cells,
+        cells: spreadsheetData.cells,
     })
     setIsDragging(true)
     setDraggingStartCell(selection.start)
     setSelectedCells(selection)
 }
 
-interface CellDraggingProps {
-    coordinate: Coordinate,
-    cells: Array<Array<CellData>>,
-    isDragging: boolean,
-    setSelectedCells: React.Dispatch<React.SetStateAction<SelectedCells>>,
-    draggingStartCell: Coordinate,
-}
-
 export const cellDragging = ({
     coordinate,
-    cells,
+    spreadsheetData,
     isDragging,
     setSelectedCells,
     draggingStartCell,
@@ -102,7 +69,7 @@ export const cellDragging = ({
                     y: Math.max(coordinate.y, draggingStartCell.y),
                 },
             },
-            cells,
+            cells: spreadsheetData.cells,
         }))
     }
 }

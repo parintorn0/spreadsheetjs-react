@@ -3,29 +3,34 @@ export interface Coordinate {
     y: number,
 }
 
+interface Color {
+    r: number,
+    g: number,
+    b: number,
+    a: number,
+}
+
 interface BorderStyle {
     width: number,
     style: string,
-    color: {
-        r: number,
-        g: number,
-        b: number,
-        a: number,
-    },
+    color: Color,
 }
 
-interface Style {
+export interface Border {
+    top?: BorderStyle,
+    right?: BorderStyle,
+    bottom?: BorderStyle,
+    left?: BorderStyle,
+}
+
+export interface Style {
+    font_size?: number,
     text_bold?: boolean,
     text_align?: string,
     text_vertical_align?: string,
-    background_color?: string,
-    border?: {
-        top?: BorderStyle,
-        right?: BorderStyle,
-        bottom?: BorderStyle,
-        left?: BorderStyle,
-
-    }
+    background_color?: Color,
+    font_color?: Color,
+    border?: Border,
 }
 
 export interface CellData {
@@ -43,8 +48,10 @@ export interface SpreadsheetData {
 }
 
 export interface SpreadsheetProps {
-    spreadsheet?: SpreadsheetData,
-    onChange?: (spreadsheet: SpreadsheetData) => void,
+    cells: Array<Array<CellData>>,
+    rows_height: Array<number>,
+    cols_width: Array<number>,
+    onChange: (spreadsheet: SpreadsheetData) => void,
 }
 
 export interface SelectedCells {

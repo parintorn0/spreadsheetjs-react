@@ -1,0 +1,31 @@
+.btn {
+    > .icon {
+        cursor: pointer;
+        display: flex;
+        padding: 2px;
+        border-radius: 4px;
+        background-color: #f3f3f3;
+        border: 1px solid #ccc;
+    }
+    > .btn-hover {
+        display: none;
+    }
+    &.has-hover:hover {
+        > .icon {
+            background-color: #ccc;
+        }
+        > .btn-hover {
+            display: block;
+            position: absolute;
+            display: flex;
+            padding: 4px 8px;
+            background-color: #f3f3f3;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: max-content;
+        }
+    }
+    &.checked > .icon {
+        background-color: #ccc;
+    }
+}

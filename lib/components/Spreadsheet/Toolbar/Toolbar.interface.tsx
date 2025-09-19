@@ -1,7 +1,9 @@
-import type { SelectedCells, SpreadsheetData } from "../Spreadsheet.interface";
+import type { Coordinate, SelectedCells, SpreadsheetData } from "../Spreadsheet.interface";
 
 export interface ToolbarProps {
     spreadsheetData: SpreadsheetData,
-    setSpreadsheetData: React.Dispatch<React.SetStateAction<SpreadsheetData>>
+    onChange: (data: SpreadsheetData) => void,
     selectedCells: SelectedCells,
+    draggingStartCell: Coordinate,
+    setDraggingStartCell: React.Dispatch<React.SetStateAction<Coordinate>>,
 }

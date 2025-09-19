@@ -1,0 +1,10 @@
+.color-picker {
+    :global(.color-options) {
+        display: flex;;
+        > :global(.color-option) {
+            display: flex;
+            width: 1px;
+            height: 5px;
+        }
+    }
+}

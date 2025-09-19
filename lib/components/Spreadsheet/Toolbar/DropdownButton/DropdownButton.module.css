@@ -1,0 +1,40 @@
+.dropdown {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    &:hover {
+        background-color: #ccc;
+    }
+    width: fit-content;
+    .dropdown-container {
+        > .btn {
+            display: flex;
+            height: 100%;
+            align-items: center;
+        }
+        > .dropdown-content {
+            &:not(.open) {
+                display: none;
+            }
+        }
+        > .dropdown-content.open {
+            display: block;
+            position: absolute;
+            display: flex;
+            padding: 4px 8px;
+            background-color: #f3f3f3;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+    }
+    .toggle-button {
+        display: flex;
+        width: 16px;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        border: none;
+        background-color: transparent;
+    }
+}

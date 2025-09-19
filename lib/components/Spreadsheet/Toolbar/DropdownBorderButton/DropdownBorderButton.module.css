@@ -1,0 +1,41 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    > .border-all-options {
+        display: flex;
+        flex-direction: column;
+        > .border-options {
+            display: flex;
+        }
+    }
+    > .border-style-options {
+        display: flex;
+        > .border-style-option {
+            height: 2px;
+            display: flex;
+            flex-direction: column;
+        }
+    }
+    .border-style {
+        display: flex;
+        padding: 0 5px;
+    }
+    .border-width-container {
+        display: flex;
+        gap: 5px;
+        .color {
+            display: flex;
+            padding-left: 5px;
+            > .color-preview {
+                display: flex;
+                width: 10px;
+                height: 10px;
+            }
+        }
+        .input {
+            width: 40px;
+            border: none;
+            background-color: transparent;
+        }
+    }
+}

@@ -1,18 +1,18 @@
-import type { CellData, Coordinate, SelectedCells, SpreadsheetData } from "../../Spreadsheet.interface"
+import type { CellData, Coordinate, SelectedCells, SpreadsheetData } from "../../../Spreadsheet.interface"
 
 export interface CellProps {
     cell: CellData,
     coordinate: Coordinate,
-    cells: Array<Array<CellData>>,
     editingCell: Coordinate | null,
+    spreadsheetData: SpreadsheetData,
+    onChange: (spreadsheetData: SpreadsheetData) => void,
     setEditingCell: React.Dispatch<React.SetStateAction<Coordinate | null>>,
-    setSpreadsheetData: React.Dispatch<React.SetStateAction<SpreadsheetData>>,
     isDragging: boolean,
     setIsDragging: React.Dispatch<React.SetStateAction<boolean>>,
     draggingStartCell: Coordinate,
     setDraggingStartCell: React.Dispatch<React.SetStateAction<Coordinate>>,
     selectedCells: SelectedCells,
     setSelectedCells: React.Dispatch<React.SetStateAction<SelectedCells>>,
-    height: number,
-    width: number,
+    contextMenuRef: React.RefObject<HTMLDivElement>,
+    setIsContextMenuOpen: React.Dispatch<React.SetStateAction<boolean>>,
 }

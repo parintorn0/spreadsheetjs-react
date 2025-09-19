@@ -1,4 +1,5 @@
 .table {
+    margin: 8px 16px;
     border-top: 1px solid transparent;
     border-left: 1px solid transparent;
     border-right: 1px solid #ccc;
@@ -14,10 +15,11 @@
             height: 50px;
             > td {
                 cursor: cell;
-                border-top: 1px solid transparent;
-                border-left: 1px solid transparent;
-                border-right: 1px solid #ccc;
-                border-bottom: 1px solid #ccc;
+                text-align: center;
+                border-top: 1px solid #ccc;
+                border-left: 1px solid #ccc;
+                border-right: 1px solid transparent;
+                border-bottom: 1px solid transparent;
                 &:not(.selected) {
                     background-color: #f3f3f3;
                 }
@@ -32,8 +34,11 @@
             cursor: cell;
             > td {
                 &:first-child {
-                    border-top: 1px solid transparent;
-                    border-left: 1px solid transparent;
+                    text-align: center;
+                    border-top: 1px solid #ccc;
+                    border-left: 1px solid #ccc;
+                    border-right: 1px solid transparent;
+                    border-bottom: 1px solid transparent;
                     &:not(.selected) {
                         background-color: #f3f3f3;
                     }
@@ -43,13 +48,13 @@
                 }
                 &:not(:first-child){
                     > input {
+                        font-family: inherit;
                         border: none;
                         border-radius: 0;
                         outline: 0;
                         margin: 0;
                         padding: 0;
                         padding-right: 2px;
-                        background-color: #ccc;
                         box-shadow: border-box;
                     }
                 }

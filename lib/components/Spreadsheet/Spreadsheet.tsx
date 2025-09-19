@@ -5,6 +5,8 @@ import type { Coordinate, SelectedCells, SpreadsheetData, SpreadsheetProps } fro
 import Toolbar from "./Toolbar/Toolbar"
 import Table from "./Table/Table"
 
+// import ColorPicker from "./Toolbar/Components/ColorPicker/ColorPicker"
+
 const defaultSpreadsheetData = {
     cells: [[{
         value: "A1",
@@ -30,26 +32,53 @@ const defaultSpreadsheetData = {
         value: "C3"
     }, {
         value: "D3"
+    }], [{
+        value: "A4",
+    }, {
+        value: "B4",
+    }, {
+        value: "C4",
+    }, {
+        value: "D4",
     }]],
     rows_height: [50, 50, 50, 50],
     cols_width: [100, 100, 100, 100],
 }
 
 const Spreadsheet = ({
-    spreadsheet = defaultSpreadsheetData,
+    cells,
+    rows_height,
+    cols_width,
     onChange = (_: SpreadsheetData) => {},
 }: SpreadsheetProps) => {
+    
+    const [allRequiredPropProvided, setAllRequiredPropProvided] = useState<boolean | null>(null)
+    
+    useEffect(() => {
+        if(cells && rows_height && cols_width) {
+            if(cells.length !== rows_height.length || cells.every(row => row.length !== cols_width.length)) {
+                setAllRequiredPropProvided(false)
+                throw new Error("SpreadsheetJSReact: The length of rows_height must match the number of rows in cells, and the length of cols_width must match the number of columns in cells.")
+            }
+            else {
+                setAllRequiredPropProvided(true)
+            }
+        }
+        else if(!cells && !rows_height && !cols_width) {
+            onChange(defaultSpreadsheetData)
+            setAllRequiredPropProvided(true)
+        }
+        else {
+            setAllRequiredPropProvided(false)
+            throw new Error("SpreadsheetJSReact: If you provide any of cells, rows_height, or cols_width props, you must provide all three.")
+        }
+    }, [])
 
-    const [spreadsheetData, setSpreadsheetData] = useState<SpreadsheetData>(spreadsheet)
     const [isDragging, setIsDragging] = useState<boolean>(false)
     const [draggingStartCell, setDraggingStartCell] = useState<Coordinate>({
         x: 0,
         y: 0,
     })
-    // const [isResizingColumn, setIsResizingColumn] = useState<boolean>(false)
-    // const [resizingColumnIndex, setResizingColumnIndex] = useState<number | null>(null)
-    // const [isResizingRow, setIsResizingRow] = useState<boolean>(false)
-    // const [resizingRowIndex, setResizingRowIndex] = useState<number | null>(null)
     const [selectedCells, setSelectedCells] = useState<SelectedCells>({
         start: {
             x: 0,
@@ -63,30 +92,127 @@ const Spreadsheet = ({
     const [editingCell, setEditingCell] = useState<Coordinate | null>(null)
 
     useEffect(() => {
-        onChange(spreadsheetData)
-    }, [spreadsheetData])
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if(cells) {
+                switch(e.key) {
+                    case "Escape":
+                        setEditingCell(null)
+                        break
+                    case "ArrowUp":
+                        setDraggingStartCell({
+                            x: selectedCells.start.x,
+                            y: Math.max(selectedCells.start.y - 1, 0),
+                        })
+                        setSelectedCells(prev => ({
+                            start: {
+                                x: prev.start.x,
+                                y: Math.max(prev.start.y - 1, 0),
+                            },
+                            end: {
+                                x: prev.start.x,
+                                y: Math.max(prev.start.y - 1, 0),
+                            }
+                        }))
+                        break
+                    case "ArrowDown":
+                        setDraggingStartCell({
+                            x: selectedCells.start.x,
+                            y: Math.min(selectedCells.start.y + 1, cells.length - 1),
+                        })
+                        setSelectedCells(prev => ({
+                            start: {
+                                x: prev.start.x,
+                                y: Math.min(prev.start.y + 1, cells.length - 1),
+                            },
+                            end: {
+                                x: prev.start.x,
+                                y: Math.min(prev.start.y + 1, cells.length - 1),
+                            }
+                        }))
+                        break
+                    case "ArrowLeft":
+                        setDraggingStartCell({
+                            x: Math.max(selectedCells.start.x - 1, 0),
+                            y: selectedCells.start.y,
+                        })
+                        setSelectedCells(prev => ({
+                            start: {
+                                x: Math.max(prev.start.x - 1, 0),
+                                y: prev.start.y,
+                            },
+                            end: {
+                                x: Math.max(prev.start.x - 1, 0),
+                                y: prev.start.y,
+                            }
+                        }))
+                        break
+                    case "ArrowRight":
+                        setDraggingStartCell({
+                            x: Math.min(selectedCells.start.x + 1, cells[0].length - 1),
+                            y: selectedCells.start.y,
+                        })
+                        setSelectedCells(prev => ({
+                            start: {
+                                x: Math.min(prev.start.x + 1, cells[0].length - 1),
+                                y: prev.start.y,
+                            },
+                            end: {
+                                x: Math.min(prev.start.x + 1, cells[0].length - 1),
+                                y: prev.start.y,
+                            }
+                        }))
+                        break
+                    default:
+                        break
+                }
+            }
+        }
+        document.addEventListener("keydown", handleKeyDown)
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown)
+        }
+    }, [
+        selectedCells,
+        draggingStartCell
+    ])
 
     return (
         <div
         className={Class.spreadsheetjs}
         >
-            <Toolbar
-            spreadsheetData={spreadsheetData}
-            setSpreadsheetData={setSpreadsheetData}
-            selectedCells={selectedCells}
-            />
-            <Table
-            spreadsheetData={spreadsheetData}
-            setSpreadsheetData={setSpreadsheetData}
-            editingCell={editingCell}
-            setEditingCell={setEditingCell}
-            isDragging={isDragging}
-            setIsDragging={setIsDragging}
-            draggingStartCell={draggingStartCell}
-            setDraggingStartCell={setDraggingStartCell}
-            selectedCells={selectedCells}
-            setSelectedCells={setSelectedCells}
-            />
+            {allRequiredPropProvided === null ? (
+                <>Initializing Spreadsheet...</>
+            ) : (cells && rows_height && cols_width) ? (
+                <>
+                    <Toolbar
+                    spreadsheetData={{
+                        cells,
+                        rows_height,
+                        cols_width,
+                    }}
+                    onChange={onChange}
+                    selectedCells={selectedCells}
+                    draggingStartCell={draggingStartCell}
+                    setDraggingStartCell={setDraggingStartCell}
+                    />
+                    <Table
+                    spreadsheetData={{
+                        cells,
+                        rows_height,
+                        cols_width,
+                    }}
+                    onChange={onChange}
+                    editingCell={editingCell}
+                    setEditingCell={setEditingCell}
+                    isDragging={isDragging}
+                    setIsDragging={setIsDragging}
+                    draggingStartCell={draggingStartCell}
+                    setDraggingStartCell={setDraggingStartCell}
+                    selectedCells={selectedCells}
+                    setSelectedCells={setSelectedCells}
+                    />
+                </>
+            ) : (<></>)}
         </div>
     )
 }

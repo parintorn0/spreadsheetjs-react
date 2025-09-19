@@ -1,8 +1,8 @@
 import { findSelection } from "../Spreadsheet.util";
 
-import { type AllDraggingProps, type AllStartDraggingProps, type ColumnDraggingProps, type ColumnStartDraggingProps, type DraggingProps, type RowDraggingProps, type RowStartDraggingProps, type StartDraggingProps } from "./Table.event.interface"
+import type { AllDraggingProps, AllStartDraggingProps, DeleteColumnProps, DeleteRowProps, DraggingProps, InsertColumnProps, InsertRowProps, StartDraggingProps } from "./Table.event.interface"
 
-const startDragging = ({
+export const startDragging = ({
     selectedCells,
     cells,
     setIsDragging,
@@ -31,8 +31,8 @@ export const allStartDragging = ({
                 y: 0,
             },
             end: {
-                x: cells[0].length,
-                y: cells.length,
+                x: cells[0].length - 1,
+                y: cells.length - 1,
             },
         },
         cells,
@@ -42,57 +42,9 @@ export const allStartDragging = ({
     })
 }
 
-export const columnStartDragging = ({
-    columnIndex,
-    cells,
-    setIsDragging,
-    setDraggingStartCell,
-    setSelectedCells,
-}: ColumnStartDraggingProps): void => {
-    startDragging({
-        selectedCells: {
-            start: {
-                x: columnIndex,
-                y: 0,
-            },
-            end: {
-                x: columnIndex,
-                y: cells.length,
-            },
-        },
-        cells,
-        setIsDragging,
-        setDraggingStartCell,
-        setSelectedCells,
-    })
-}
 
-export const rowStartDragging = ({
-    rowIndex,
-    cells,
-    setIsDragging,
-    setDraggingStartCell,
-    setSelectedCells,
-}: RowStartDraggingProps): void => {
-    startDragging({
-        selectedCells: {
-            start: {
-                x: 0,
-                y: rowIndex,
-            },
-            end: {
-                x: cells[0].length,
-                y: rowIndex,
-            },
-        },
-        cells,
-        setIsDragging,
-        setDraggingStartCell,
-        setSelectedCells,
-    })
-}
 
-const dragging = ({
+export const dragging = ({
     selectedCells,
     cells,
     isDragging,
@@ -118,8 +70,8 @@ export const allDragging = ({
                 y: 0,
             },
             end: {
-                x: cells[0].length,
-                y: cells.length,
+                x: cells[0].length - 1,
+                y: cells.length - 1,
             },
         },
         cells,
@@ -128,50 +80,213 @@ export const allDragging = ({
     })
 }
 
-export const columnDragging = ({
-    columnIndex,
-    cells,
-    isDragging,
+export const insertRow = ({
+    spreadsheetData,
+    onChange,
+    selectedCells,
     setSelectedCells,
-    draggingStartCell,
-}: ColumnDraggingProps) => {
-    dragging({
-        selectedCells: {
+    setDraggingStartCell,
+    after = false,
+}: InsertRowProps) => {
+    onChange({
+        ...spreadsheetData,
+        cells: [
+            ...(
+                after ? (
+                    spreadsheetData.cells.slice(0, selectedCells.end.y + 1)
+                ) : (
+                    spreadsheetData.cells.slice(0, selectedCells.start.y)
+                )
+            ),
+            spreadsheetData.cells[0].map(()=>({ value: "" })),
+            ...(
+                after ? (
+                    spreadsheetData.cells.slice(selectedCells.end.y + 1, spreadsheetData.cells.length)
+                ) : (
+                    spreadsheetData.cells.slice(selectedCells.start.y, spreadsheetData.cells.length).map((
+                        row
+                    ) => row.map((
+                        col
+                    ) => (col.from ? { ...col, from: {
+                        ...col.from,
+                        y: col.from.y + 1,
+                    } } : col)))
+                )
+            ),
+        ],
+        rows_height: [
+            ...(
+                after ? (
+                    spreadsheetData.rows_height.slice(0, selectedCells.end.y + 1)
+                ) : (
+                    spreadsheetData.rows_height.slice(0, selectedCells.start.y)
+                )
+            ),
+            50,
+            ...(
+                after ? (
+                    spreadsheetData.rows_height.slice(selectedCells.end.y + 1, spreadsheetData.rows_height.length)
+                ) : (
+                    spreadsheetData.rows_height.slice(selectedCells.start.y, spreadsheetData.rows_height.length)
+                )
+            ),
+        ],
+    })
+    if(!after) {
+        setSelectedCells(spreadsheetData => ({
             start: {
-                x: Math.min(columnIndex, draggingStartCell.x),
-                y: 0,
+                ...spreadsheetData.start,
+                y: spreadsheetData.start.y + 1,
             },
             end: {
-                x: Math.max(columnIndex, draggingStartCell.x),
-                y: cells.length,
+                ...spreadsheetData.end,
+                y: spreadsheetData.end.y + 1,
             },
-        },
-        cells,
-        isDragging,
-        setSelectedCells,
-    })
+        }))
+        setDraggingStartCell(spreadsheetData => ({
+            ...spreadsheetData,
+            y: spreadsheetData.y + 1,
+        }))
+    }
 }
 
-export const rowDragging = ({
-    rowIndex,
-    cells,
-    isDragging,
+export const insertColumn = ({
+    spreadsheetData,
+    onChange,
+    selectedCells,
     setSelectedCells,
-    draggingStartCell,
-}: RowDraggingProps) => {
-    dragging({
-        selectedCells: {
+    setDraggingStartCell,
+    after = false,
+}: InsertColumnProps) => {
+    onChange({
+        ...spreadsheetData,
+        cells: spreadsheetData.cells.map(row => ([
+            ...(
+                after ? (
+                    row.slice(0, selectedCells.end.x + 1)
+                ) : (
+                    row.slice(0, selectedCells.start.x)
+                )
+            ),
+            { value: "" },
+            ...(
+                after ? (
+                    row.slice(selectedCells.end.x + 1, row.length)
+                ) : (
+                    row.slice(selectedCells.start.x, row.length).map((
+                        col
+                    ) => (
+                        col.from ? {
+                            ...col,
+                            from: {
+                                ...col.from,
+                                x: col.from.x + 1
+                            }
+                        } : col
+                    ))
+                )
+            ),
+        ])),
+        cols_width: [
+            ...(
+                after ? (
+                    spreadsheetData.cols_width.slice(0, selectedCells.end.x + 1)
+                ) : (
+                    spreadsheetData.cols_width.slice(0, selectedCells.start.x)
+                )
+            ),
+            100,
+            ...(
+                after ? (
+                    spreadsheetData.cols_width.slice(selectedCells.end.x + 1, spreadsheetData.cols_width.length)
+                ) : (
+                    spreadsheetData.cols_width.slice(selectedCells.start.x, spreadsheetData.cols_width.length)
+                )
+            ),
+        ]
+    })
+    if(!after) {
+        setSelectedCells(spreadsheetData => ({
             start: {
-                x: 0,
-                y: Math.min(rowIndex, draggingStartCell.y),
+                ...spreadsheetData.start,
+                x: spreadsheetData.start.x + 1,
             },
             end: {
-                x: cells[0].length,
-                y: Math.max(rowIndex, draggingStartCell.y),
+                ...spreadsheetData.end,
+                x: spreadsheetData.end.x + 1,
             },
-        },
-        cells,
-        isDragging,
-        setSelectedCells,
+        }))
+        setDraggingStartCell(spreadsheetData => ({
+            ...spreadsheetData,
+            x: spreadsheetData.x + 1,
+        }))
+    }
+}
+
+export const deleteColumn = ({
+    spreadsheetData,
+    onChange,
+    selectedCells,
+    setSelectedCells,
+    setDraggingStartCell,
+}: DeleteColumnProps) => {
+    onChange({
+        ...spreadsheetData,
+        cells: spreadsheetData.cells.map(row => row.length > 1 ? [
+            ...row.slice(0, selectedCells.start.x),
+            ...row.slice(selectedCells.end.x + 1, row.length),
+        ] : row),
+        cols_width: spreadsheetData.cols_width.length > 1 ? [
+            ...spreadsheetData.cols_width.slice(0, selectedCells.start.x),
+            ...spreadsheetData.cols_width.slice(selectedCells.end.x + 1, spreadsheetData.cols_width.length),
+        ] : spreadsheetData.cols_width,
     })
+    setSelectedCells(spreadsheetData => ({
+        start: {
+            x: Math.max(0, spreadsheetData.start.x - 1),
+            y: selectedCells.start.y,
+        },
+        end: {
+            x: Math.max(0, spreadsheetData.start.x - 1),
+            y: selectedCells.start.y,
+        },
+    }))
+    setDraggingStartCell(spreadsheetData => ({
+        x: Math.max(0, spreadsheetData.x - 1),
+        y: selectedCells.start.y,
+    }))
+}
+
+export const deleteRow = ({
+    spreadsheetData,
+    onChange,
+    selectedCells,
+    setSelectedCells,
+    setDraggingStartCell,
+}: DeleteRowProps) => {
+    onChange({
+        ...spreadsheetData,
+        cells: [
+            ...spreadsheetData.cells.slice(0, selectedCells.start.y),
+            ...spreadsheetData.cells.slice(selectedCells.end.y + 1, spreadsheetData.cells.length),
+        ],
+        rows_height:[
+            ...spreadsheetData.rows_height.slice(0, selectedCells.start.y),
+            ...spreadsheetData.rows_height.slice(selectedCells.end.y + 1, spreadsheetData.rows_height.length),
+        ],
+    })
+    setSelectedCells(spreadsheetData => ({
+        start: {
+            x: selectedCells.start.x,
+            y: Math.max(0, spreadsheetData.start.y - 1),
+        },
+        end: {
+            x: selectedCells.start.x,
+            y: Math.max(0, spreadsheetData.start.y - 1),
+        },
+    }))
+    setDraggingStartCell(spreadsheetData => ({
+        x: selectedCells.start.x,
+        y: Math.max(0, spreadsheetData.y - 1),
+    }))
 }
