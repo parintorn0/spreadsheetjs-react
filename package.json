@@ -41,8 +41,8 @@
     "vite-plugin-lib-inject-css": "^2.2.2"
   },
   "peerDependencies": {
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react": "^18",
+    "react-dom": "^18"
   },
   "repository": {
     "type": "git",
