@@ -28,9 +28,14 @@ const DropdownButton = ({
 
 
     return (
-        <div className={Class.dropdown} ref={ref}>
-            <div className={Class.dropdownContainer}>
-                <div className={Class.btn} onClick={() => allowButtonOpen ? toggle() : close()}>
+        <div className={Class.dropdown}
+        ref={ref}
+        onClick={() => allowButtonOpen && toggle()}
+        >
+            <div
+            className={Class.dropdownContainer}
+            >
+                <div className={Class.btn} onClick={(e) => !allowButtonOpen && e.preventDefault()}>
                     {button}
                 </div>
                 <div className={`${Class.dropdownContent} ${isOpen ? Class.open : ''}`}>

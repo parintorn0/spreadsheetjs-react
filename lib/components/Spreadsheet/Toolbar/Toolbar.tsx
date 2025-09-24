@@ -20,11 +20,11 @@ const Toolbar = ({
 
     return (
         <div className={Class.toolbar}>
-            <div className="section">
-                <div className="section-name">
+            <div className={Class.section}>
+                <div className={Class.sectionName}>
                     Cell Customization
                 </div>
-                <div className="section-tools">
+                <div className={Class.sectionTools}>
                     <DropdownTextAlignButton
                         spreadsheetData={spreadsheetData}
                         onChange={onChange}
@@ -48,7 +48,7 @@ const Toolbar = ({
                         selectedCells={selectedCells}
                     />
                 </div>
-                <div className="section-tools">
+                <div className={Class.sectionTools}>
                     <DropdownFontColorButton
                         spreadsheetData={spreadsheetData}
                         onChange={onChange}
@@ -69,11 +69,11 @@ const Toolbar = ({
                 </div>
             </div>
 
-            <div className="section">
-                <div className="section-name">
+            <div className={Class.section}>
+                <div className={Class.sectionName}>
                     Cell Manipulation
                 </div>
-                <div className="section-tools">
+                <div className={Class.sectionTools}>
                     <div/>
                     <MergeCellsButton
                         spreadsheetData={spreadsheetData}
