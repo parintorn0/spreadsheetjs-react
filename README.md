@@ -74,6 +74,10 @@ const YourParentComponent = () => {
 
 `cell`.`style`: style of this cell
 
+# License
+
+Licensed under the terms of the [MIT License](/LICENSE).
+
 # Roadmap
 
 ## v1.x Features
