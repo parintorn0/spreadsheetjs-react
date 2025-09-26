@@ -1,7 +1,7 @@
 import { useState } from "react"
 import DropdownButton from "../DropdownButton/DropdownButton"
 import type { DropdownFontColorButtonProps } from "./DropdownFontColorButton.interface"
-import { SketchPicker } from "react-color"
+import ColorPicker from "@rc-component/color-picker"
 import { setFontColor } from "../Toolbar.util"
 import Button from "../Button/Button"
 import { FontColor } from "../../../../assets/icons/Icon"
@@ -37,16 +37,18 @@ const DropdownFontColorButton = ({
                 </Button>
             )}
             >
-                <SketchPicker
-                    color={color}
-                    onChange={(updatedColor) => {
+                <ColorPicker
+                    value={color}
+                    onChange={(value) => {
+                        const {r, g, b, a} = value.toRgb()
                         setColor({
-                            ...updatedColor.rgb,
-                            a: updatedColor.rgb.a ?? 1,
+                            r,
+                            g,
+                            b,
+                            a,
                         })
 
                     }}
-                    // onMouseUp={() => {}}
                 />
             </DropdownButton>
     )

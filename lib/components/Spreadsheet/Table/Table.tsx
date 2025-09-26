@@ -22,6 +22,8 @@ const Table = ({
     setDraggingStartCell,
     selectedCells,
     setSelectedCells,
+    overrideResizeColumnPrompt,
+    overrideResizeRowPrompt,
 }: TableProps) => {
     const edgeThreshold = 5
 
@@ -194,6 +196,7 @@ const Table = ({
                 contextMenuRef={rowCellContextMenuRef}
                 isContextMenuOpen={isRowCellContextMenuOpen}
                 setIsContextMenuOpen={setIsRowCellContextMenuOpen}
+                overrideResizeRowPrompt={overrideResizeRowPrompt}
             />
             <ColumnCellMenu
                 spreadsheetData={spreadsheetData}
@@ -204,6 +207,7 @@ const Table = ({
                 contextMenuRef={columnCellContextMenuRef}
                 isContextMenuOpen={isColumnCellContextMenuOpen}
                 setIsContextMenuOpen={setIsColumnCellContextMenuOpen}
+                overrideResizeColumnPrompt={overrideResizeColumnPrompt}
             />
         </>
     )

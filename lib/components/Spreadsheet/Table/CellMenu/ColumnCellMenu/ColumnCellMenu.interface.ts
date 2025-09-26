@@ -10,4 +10,5 @@ export interface ColumnCellMenuProps {
     contextMenuRef: React.RefObject<HTMLDivElement>,
     isContextMenuOpen: boolean,
     setIsContextMenuOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    overrideResizeColumnPrompt?: () => Promise<number | null>,
 }

@@ -11,4 +11,6 @@ export interface TableProps {
     setDraggingStartCell: React.Dispatch<React.SetStateAction<Coordinate>>,
     selectedCells: SelectedCells,
     setSelectedCells: React.Dispatch<React.SetStateAction<SelectedCells>>,
+    overrideResizeColumnPrompt?: () => Promise<number | null>,
+    overrideResizeRowPrompt?: () => Promise<number | null>,
 }

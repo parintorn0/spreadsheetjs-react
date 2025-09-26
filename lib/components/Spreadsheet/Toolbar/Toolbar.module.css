@@ -3,7 +3,7 @@
     display: flex;
     background-color: #f3f3f3;
     border: 1px solid #ccc;
-    border-radius: 24px;
+    border-radius: 8px;
     padding: 10px;
     gap: 8px;
     > .section {

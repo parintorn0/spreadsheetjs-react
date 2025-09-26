@@ -1,6 +1,6 @@
 import { findSelection } from "../Spreadsheet.util";
 
-import type { AllDraggingProps, AllStartDraggingProps, DeleteColumnProps, DeleteRowProps, DraggingProps, InsertColumnProps, InsertRowProps, StartDraggingProps } from "./Table.event.interface"
+import type { AllDraggingProps, AllStartDraggingProps, DeleteColumnProps, DeleteRowProps, DraggingProps, InsertColumnProps, InsertRowProps, ResizeColumnProps, ResizeRowProps, StartDraggingProps } from "./Table.event.interface"
 
 export const startDragging = ({
     selectedCells,
@@ -289,4 +289,69 @@ export const deleteRow = ({
         x: selectedCells.start.x,
         y: Math.max(0, spreadsheetData.y - 1),
     }))
+}
+
+export const resizeColumnPrompt = (): number | null => {
+    const input = prompt("Enter new column width (in pixels):", "100")
+    if(input) {
+        const width = parseInt(input)
+        if(width) {
+            return width
+        } else {
+            alert("Invalid input.")
+            return resizeColumnPrompt()
+        }
+    }
+    else {
+        return null
+    }
+}
+
+export const resizeColumn = ({
+    spreadsheetData,
+    onChange,
+    selectedCells,
+    width
+}: ResizeColumnProps) => {
+    
+    onChange({
+        ...spreadsheetData,
+        cols_width:[
+            ...spreadsheetData.cols_width.slice(0, selectedCells.start.x),
+            ...Array.from({length: selectedCells.end.x - selectedCells.start.x + 1}, () => width),
+            ...spreadsheetData.cols_width.slice(selectedCells.end.x + 1),
+        ],
+    })
+}
+
+export const resizeRowPrompt = (): number | null => {
+    const input = prompt("Enter new row height (in pixels):", "50")
+    if(input) {
+        const height = parseInt(input)
+        if(height) {
+            return height
+        } else {
+            alert("Invalid input.")
+            return resizeRowPrompt()
+        }
+    }
+    else {
+        return null
+    }
+}
+
+export const resizeRow = ({
+    spreadsheetData,
+    onChange,
+    selectedCells,
+    height,
+}: ResizeRowProps) => {
+    onChange({
+        ...spreadsheetData,
+        rows_height: [
+            ...spreadsheetData.rows_height.slice(0, selectedCells.start.y),
+            ...Array.from({ length: selectedCells.end.y - selectedCells.start.y + 1 }, () => height),
+            ...spreadsheetData.rows_height.slice(selectedCells.end.y + 1),
+        ],
+    })
 }

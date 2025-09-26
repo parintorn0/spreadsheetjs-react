@@ -1,5 +1,5 @@
 import Class from "./DropdownBorderButton.module.css"
-import { SketchPicker } from "react-color"
+import ColorPicker from "@rc-component/color-picker"
 import Button from "../Button/Button"
 import DropdownButton from "../DropdownButton/DropdownButton"
 import type { DropdownBorderButtonProps } from "./DropdownBorderButton.interface"
@@ -169,18 +169,19 @@ const DropdownBorderButton = ({
                             )}
                             allowButtonOpen={true}
                         >
-                            <div>
-                                <SketchPicker
-                                    color={borderColor}
-                                    onChange={(updatedColor) => {
-                                        setBorderColor({
-                                            ...updatedColor.rgb,
-                                            a: updatedColor.rgb.a ?? 1,
-                                        })
+                            <ColorPicker
+                                value={borderColor}
+                                onChange={(value) => {
+                                    const { r, g, b, a } = value.toRgb()
+                                    setBorderColor({
+                                        r,
+                                        g,
+                                        b,
+                                        a,
+                                    })
 
-                                    }}
-                                />
-                            </div>
+                                }}
+                            />
                         </DropdownButton>
                         <input
                         className={Class.input}

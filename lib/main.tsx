@@ -1,1 +1,3 @@
-export { default as Spreadsheet } from "./components/Spreadsheet/Spreadsheet"
+import Spreadsheet from "./components/Spreadsheet/Spreadsheet"
+
+export default Spreadsheet

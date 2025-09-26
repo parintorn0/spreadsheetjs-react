@@ -4,9 +4,17 @@ import { useState } from "react"
 
 function App() {
 
-  const [cells, setCells] = useState([[{ value: "A1" }]])
-  const [rowsHeight, setRowsHeight] = useState([50])
-  const [colsWidth, setColsWidth] = useState([100])
+  const [cells, setCells] = useState([[{
+    value: "A1"
+  }, {
+    value: "B1"
+  }], [{
+    value: "A2"
+  }, {
+    value: "B2"
+  }]])
+  const [rowsHeight, setRowsHeight] = useState([50, 50])
+  const [colsWidth, setColsWidth] = useState([100, 100])
 
   return (
     <div className={Class.app}>

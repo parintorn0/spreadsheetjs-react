@@ -1,10 +1,11 @@
 import { useState } from "react"
 import DropdownButton from "../DropdownButton/DropdownButton"
 import type { DropdownBackgroundColorButtonProps } from "./DropdownBackgroundColorButton.interface"
-import { SketchPicker } from "react-color"
+import ColorPicker from "@rc-component/color-picker"
 import { setBackgroundColor } from "../Toolbar.util"
 import Button from "../Button/Button"
 import { BackgroundColor } from "../../../../assets/icons/Icon"
+import '@rc-component/color-picker/assets/index.css';
 
 interface Color {
     r: number,
@@ -37,12 +38,15 @@ const DropdownBackgroundColorButton = ({
                 </Button>
             )}
             >
-                <SketchPicker
-                    color={color}
-                    onChange={(updatedColor) => {
+                <ColorPicker
+                    value={color}
+                    onChange={(value) => {
+                        const {r, g, b, a} = value.toRgb()
                         setColor({
-                            ...updatedColor.rgb,
-                            a: updatedColor.rgb.a ?? 1,
+                            r,
+                            g,
+                            b,
+                            a,
                         })
 
                     }}

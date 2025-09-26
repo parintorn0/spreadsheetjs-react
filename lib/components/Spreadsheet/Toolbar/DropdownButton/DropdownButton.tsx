@@ -30,7 +30,7 @@ const DropdownButton = ({
     return (
         <div className={Class.dropdown}
         ref={ref}
-        onClick={() => allowButtonOpen && toggle()}
+        onClick={() => (allowButtonOpen && !isOpen) && toggle()}
         >
             <div
             className={Class.dropdownContainer}
@@ -44,7 +44,7 @@ const DropdownButton = ({
             </div>
             <button
             className={Class.toggleButton}
-            onMouseDown={toggle}
+            onMouseDown={() => !allowButtonOpen && toggle()}
             >
                 {isOpen ? <span>▲</span> : <span>▼</span>}
             </button>

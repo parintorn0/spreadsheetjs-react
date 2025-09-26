@@ -100,7 +100,23 @@ const Cell = ({
         isInsideSelectedCells ? (
             "1px solid black"
         ) : (
-            "1px solid transparent"
+            cell.expand_y && spreadsheetData.cells[coordinate.y + cell.expand_y - 1][coordinate.x].style?.border?.bottom ? (
+                `${
+                    spreadsheetData.cells[coordinate.y + cell.expand_y - 1][coordinate.x].style?.border?.bottom?.width
+                }px ${
+                    spreadsheetData.cells[coordinate.y + cell.expand_y - 1][coordinate.x].style?.border?.bottom?.style
+                } rgba(${
+                    spreadsheetData.cells[coordinate.y + cell.expand_y - 1][coordinate.x].style?.border?.bottom?.color.r
+                }, ${
+                    spreadsheetData.cells[coordinate.y + cell.expand_y - 1][coordinate.x].style?.border?.bottom?.color.g
+                }, ${
+                    spreadsheetData.cells[coordinate.y + cell.expand_y - 1][coordinate.x].style?.border?.bottom?.color.b
+                }, ${
+                    spreadsheetData.cells[coordinate.y + cell.expand_y - 1][coordinate.x].style?.border?.bottom?.color.a
+                })`
+            ) : (
+                "1px solid transparent"
+            )
         )
     )
     const borderRight = style?.border?.right && (
@@ -109,7 +125,23 @@ const Cell = ({
         isInsideSelectedCells ? (
             "1px solid black"
         ) : (
-            "1px solid transparent"
+            cell.expand_x && spreadsheetData.cells[coordinate.y][coordinate.x + cell.expand_x - 1].style?.border?.right ? (
+                `${
+                    spreadsheetData.cells[coordinate.y][coordinate.x + cell.expand_x - 1].style?.border?.right?.width
+                }px ${
+                    spreadsheetData.cells[coordinate.y][coordinate.x + cell.expand_x - 1].style?.border?.right?.style
+                } rgba(${
+                    spreadsheetData.cells[coordinate.y][coordinate.x + cell.expand_x - 1].style?.border?.right?.color.r
+                }, ${
+                    spreadsheetData.cells[coordinate.y][coordinate.x + cell.expand_x - 1].style?.border?.right?.color.g
+                }, ${
+                    spreadsheetData.cells[coordinate.y][coordinate.x + cell.expand_x - 1].style?.border?.right?.color.b
+                }, ${
+                    spreadsheetData.cells[coordinate.y][coordinate.x + cell.expand_x - 1].style?.border?.right?.color.a
+                })`
+            ) : (
+                "1px solid transparent"
+            )
         )
     )
 

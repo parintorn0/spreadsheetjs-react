@@ -1,7 +1,7 @@
 {
   "name": "spreadsheetjs-react",
   "private": false,
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-alpha.5",
   "type": "module",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
@@ -22,17 +22,16 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
-    "@types/react": "^18",
+    "@types/react": "^18.0.0",
     "@types/react-color": "^3.0.13",
-    "@types/react-dom": "^18",
+    "@types/react-dom": "^18.0.0",
     "@vitejs/plugin-react-swc": "^4.0.0",
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
-    "react": "^18",
-    "react-color": "^2.19.3",
-    "react-dom": "^18",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
     "unplugin-dts": "1.0.0-beta.6",
@@ -41,11 +40,14 @@
     "vite-plugin-lib-inject-css": "^2.2.2"
   },
   "peerDependencies": {
-    "react": "^18",
-    "react-dom": "^18"
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/parintorn0/spreadsheetjs-react.git"
+  },
+  "dependencies": {
+    "@rc-component/color-picker": "^3.0.2"
   }
 }

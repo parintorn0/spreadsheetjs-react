@@ -159,7 +159,7 @@ export const setBorder = ({
                             y: rowIndex,
                         },
                         selectedCells,
-                    }) && !col.from ? ({
+                    }) ? ({
                         ...col,
                         style: {
                             ...col.style,
@@ -197,7 +197,7 @@ export const setBorder = ({
                             y: rowIndex,
                         },
                         selectedCells,
-                    }) && !col.from ? ({
+                    }) ? ({
                         ...col,
                         style: {
                             ...col.style,
@@ -277,16 +277,18 @@ export const setBorder = ({
         case "outside":
             onChange({
                 ...spreadsheetData,
-                cells: spreadsheetData.cells.map((row, rowIndex) => row.map((col, colIndex) => (
+                cells: spreadsheetData.cells.map((
+                    row, rowIndex
+                ) => row.map((
+                    col, colIndex
+                ) => (
                     checkIsInsideSelectedCells({
                         coordinate: {
                             x: colIndex,
                             y: rowIndex,
                         },
                         selectedCells,
-                    }) && (
-                        !col.from
-                    ) ? {
+                    }) ? {
                         ...col,
                         style: {
                             ...col.style,
@@ -302,18 +304,18 @@ export const setBorder = ({
                                         style: borderStyle,
                                         color: borderColor,
                                     } : col.style?.border?.left,
-                                    bottom: rowIndex + (col.expand_y || 1) - 1 === selectedCells.end.y ? {
+                                    bottom: rowIndex === selectedCells.end.y ? {
                                         width: borderWidth,
                                         style: borderStyle,
                                         color: borderColor,
                                     } : col.style?.border?.bottom,
-                                    right: colIndex + (col.expand_x || 1) - 1 === selectedCells.end.x ? {
+                                    right: colIndex === selectedCells.end.x ? {
                                         width: borderWidth,
                                         style: borderStyle,
                                         color: borderColor,
                                     } : col.style?.border?.right,
                                 }).filter(([_, value]) => value !== undefined)
-                            ),
+                            ) as Border,
                         },
                     } : col
                 )))
@@ -330,21 +332,47 @@ export const mergeCells = ({
     selectedCells,
     setDraggingStartCell,
 }: MergeCellsProps) => {
-    const hadMergeCell = spreadsheetData.cells.flat().some(val => (
-        Object.hasOwn(val, "expand_x") ||
-        Object.hasOwn(val, "expand_y") ||
-        Object.hasOwn(val, "from")
+    const hadMergeCell = spreadsheetData.cells.some((row, rowIndex) => (
+        row.some((col, colIndex) => (
+            (
+                Object.hasOwn(col, "expand_x") ||
+                Object.hasOwn(col, "expand_y") ||
+                Object.hasOwn(col, "from")
+            ) && (
+                checkIsInsideSelectedCells({
+                    coordinate: {
+                        x: colIndex,
+                        y: rowIndex,
+                    },
+                    selectedCells,
+                })
+            )
+        ))
     ))
     if(hadMergeCell) {
         onChange({
             ...spreadsheetData,
-            cells: spreadsheetData.cells.map(row => row.map(col => Object.fromEntries(
-                    Object.entries(col).filter(([key]) => (
-                        key !== "expand_x" &&
-                        key !== "expand_y" &&
-                        key !== "from"
-                    ))
-                ) as CellData))
+            cells: spreadsheetData.cells.map((row, rowIndex) => (
+                row.map((col, colIndex) => (
+                    checkIsInsideSelectedCells({
+                        coordinate: {
+                            x: colIndex,
+                            y: rowIndex,
+                        },
+                        selectedCells,
+                    }) ? (
+                        Object.fromEntries(
+                            Object.entries(col).filter(([
+                                key
+                            ]) => (
+                                key !== "expand_x" &&
+                                key !== "expand_y" &&
+                                key !== "from"
+                            ))
+                        )
+                    ) as CellData : col
+                ))
+            ))
         })
     }
     else {
@@ -376,10 +404,10 @@ export const mergeCells = ({
                         key !== "from"
                     ))
                 ) as CellData),
-                ...(expandX !==1 ? {
+                ...(expandX > 1 ? {
                     expand_x: expandX
                 } : {}),
-                ...(expandY !==1 ? {
+                ...(expandY > 1 ? {
                     expand_y: expandY
                 } : {}),
             } : {

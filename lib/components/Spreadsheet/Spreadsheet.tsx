@@ -50,6 +50,8 @@ const Spreadsheet = ({
     rows_height,
     cols_width,
     onChange = (_: SpreadsheetData) => {},
+    overrideResizeColumnPrompt,
+    overrideResizeRowPrompt,
 }: SpreadsheetProps) => {
     
     const [allRequiredPropProvided, setAllRequiredPropProvided] = useState<boolean | null>(null)
@@ -210,6 +212,8 @@ const Spreadsheet = ({
                     setDraggingStartCell={setDraggingStartCell}
                     selectedCells={selectedCells}
                     setSelectedCells={setSelectedCells}
+                    overrideResizeColumnPrompt={overrideResizeColumnPrompt}
+                    overrideResizeRowPrompt={overrideResizeRowPrompt}
                     />
                 </>
             ) : (<></>)}

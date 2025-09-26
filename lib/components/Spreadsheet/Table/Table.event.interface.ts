@@ -41,3 +41,17 @@ export interface InsertColumnProps extends CellManagementProps {
 export interface DeleteColumnProps extends CellManagementProps {}
 
 export interface DeleteRowProps extends CellManagementProps {}
+
+interface ResizeProps {
+    spreadsheetData: SpreadsheetData,
+    onChange: (data: SpreadsheetData) => void,
+    selectedCells: SelectedCells,
+}
+
+export interface ResizeColumnProps extends ResizeProps {
+    width: number,
+}
+
+export interface ResizeRowProps extends ResizeProps {
+    height: number,
+}

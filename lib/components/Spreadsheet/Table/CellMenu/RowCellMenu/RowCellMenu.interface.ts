@@ -9,4 +9,5 @@ export interface RowCellMenuProps {
     contextMenuRef: React.RefObject<HTMLDivElement>,
     isContextMenuOpen: boolean,
     setIsContextMenuOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    overrideResizeRowPrompt?: () => Promise<number | null>,
 }

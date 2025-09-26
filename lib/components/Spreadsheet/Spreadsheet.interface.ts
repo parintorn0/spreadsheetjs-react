@@ -52,6 +52,8 @@ export interface SpreadsheetProps {
     rows_height: Array<number>,
     cols_width: Array<number>,
     onChange: (spreadsheet: SpreadsheetData) => void,
+    overrideResizeColumnPrompt?: () => Promise<number | null>,
+    overrideResizeRowPrompt?: () => Promise<number | null>,
 }
 
 export interface SelectedCells {
