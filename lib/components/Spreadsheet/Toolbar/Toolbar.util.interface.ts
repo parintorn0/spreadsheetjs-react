@@ -60,3 +60,12 @@ export interface MergeCellsProps extends SetStyleProps {
 
 export interface FontIncrementProps extends SetStyleProps {}
 export interface FontDecrementProps extends SetStyleProps {}
+
+interface ManageImageProps {
+    spreadsheetData: SpreadsheetData,
+    onChange: (spreadsheetData: SpreadsheetData) => void,
+    draggingStartCell: Coordinate,
+}
+export interface InsertImageProps extends ManageImageProps {}
+
+export interface DeleteImageProps extends ManageImageProps {}

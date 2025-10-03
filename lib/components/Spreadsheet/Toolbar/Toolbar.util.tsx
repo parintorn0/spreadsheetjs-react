@@ -1,5 +1,5 @@
 import type { Style, CellData, Border } from "../Spreadsheet.interface"
-import type { FontDecrementProps, FontIncrementProps, MergeCellsProps, SetBackgroundColorProps, SetBoldProps, SetBorderProps, SetFontColorProps, SetFontSizeProps, SetTextAlignProps, SetTextVerticalAlignProps } from "./Toolbar.util.interface"
+import type { DeleteImageProps, FontDecrementProps, FontIncrementProps, InsertImageProps, MergeCellsProps, SetBackgroundColorProps, SetBoldProps, SetBorderProps, SetFontColorProps, SetFontSizeProps, SetTextAlignProps, SetTextVerticalAlignProps } from "./Toolbar.util.interface"
 import { checkIsInsideSelectedCells, isSameCoordinate } from "../Spreadsheet.util"
 
 export const setTextAlign = ({
@@ -505,5 +505,80 @@ export const fontDecrement = ({
                 },
             }) : col
         )))
+    })
+}
+
+export const insertImage = ({
+    spreadsheetData,
+    onChange,
+    draggingStartCell,
+}: InsertImageProps) => {
+    const inputElem = document.createElement("input")
+    inputElem.type = "file"
+    inputElem.accept = "image/*"
+    inputElem.onchange = async () => {
+        if(inputElem.files && inputElem.files[0]) {
+            const file = inputElem.files[0]
+            const imgBlob = new Blob([file], { type: file.type })
+            const imgPath = URL.createObjectURL(imgBlob)
+            const newCells = spreadsheetData.cells.map((row, rowIndex) => row.map((col, colIndex) => {
+                if(
+                    isSameCoordinate({
+                        x: colIndex,
+                        y: rowIndex,
+                    }, draggingStartCell)
+                ) {
+                    if(col.imgPath?.startsWith("blob:")) {
+                        URL.revokeObjectURL(col.imgPath)
+                    }
+                    return {
+                        ...col,
+                        imgPath,
+                        imgBlob,
+                    }
+                }
+                else {
+                    return col
+                }
+            }))
+            onChange({
+                ...spreadsheetData,
+                cells: newCells
+            })
+        }
+    }
+    inputElem.click()
+}
+
+export const deleteImage = ({
+    spreadsheetData,
+    onChange,
+    draggingStartCell,
+}: DeleteImageProps) => {
+    onChange({
+        ...spreadsheetData,
+        cells: spreadsheetData.cells.map((row, rowIndex) => (
+            row.map((col, colIndex) => {
+                if(
+                    isSameCoordinate({
+                        x: colIndex,
+                        y: rowIndex,
+                    }, draggingStartCell)
+                ) {
+                    if(col.imgPath?.startsWith("blob:")) {
+                        URL.revokeObjectURL(col.imgPath)
+                    }
+                    return Object.fromEntries(
+                        Object.entries(col).filter(([key]) => (
+                            key !== "imgPath" &&
+                            key !== "imgBlob"
+                        ))
+                    ) as CellData
+                }
+                else {
+                    return col
+                }
+            })
+        ))
     })
 }

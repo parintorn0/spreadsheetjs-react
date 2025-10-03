@@ -7,7 +7,9 @@ export interface CellDoubleClickProps {
 }
 
 export interface CellValueChangedProps {
-    value: string,
+    value?: string,
+    imgPath?: string,
+    imgBlob?: Blob,
     spreadsheetData: SpreadsheetData,
     onChange: (data: SpreadsheetData) => void,
     coordinate: Coordinate

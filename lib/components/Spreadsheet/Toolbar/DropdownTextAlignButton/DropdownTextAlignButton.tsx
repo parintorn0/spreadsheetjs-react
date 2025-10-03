@@ -19,7 +19,10 @@ const DropdownTextAlignButton = ({
     }): React.ReactNode => (
         <Button
         onClick={() => {
-            setCurrentTextAlignButton(children)
+            setCurrentTextAlignButton({
+                align,
+                node: children
+            })
             setTextAlign({
                 spreadsheetData,
                 onChange,
@@ -57,13 +60,26 @@ const DropdownTextAlignButton = ({
         </TextAlignButton>
     )
 
-    const [currentTextAlignButton, setCurrentTextAlignButton] = useState<React.ReactNode>(<TextAlignLeft />)
+    const [currentTextAlignButton, setCurrentTextAlignButton] = useState<{
+        align: "left" | "center" | "right",
+        node: React.ReactNode
+    }>({
+        align: "left",
+        node: <TextAlignLeft />
+    })
 
     return (
         <DropDownButton
         button={(
-            <Button>
-                {currentTextAlignButton}
+            <Button
+            onClick={() => setTextAlign({
+                spreadsheetData,
+                onChange,
+                selectedCells,
+                align: currentTextAlignButton.align,
+            })}
+            >
+                {currentTextAlignButton.node}
             </Button>
         )}
         >

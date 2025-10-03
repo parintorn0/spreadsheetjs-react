@@ -5,11 +5,7 @@ const TextColor = ({
     height,
 }: IconProps) => (
     <svg fill="#000000" width={`${width || 24}px`} height={`${height || 24}px`} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <g id="SVGRepo_bgCarrier" strokeWidth="0" />
-        <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" />
-        <g id="SVGRepo_iconCarrier">
-            <path d="M5 18h14v3H5zm7.5-14h-1c-.401 0-.764.24-.921.609L5.745 16h2.173l1.273-3h5.604l1.268 3h2.171L13.421 4.61A1 1 0 0 0 12.5 4zm-2.46 7 1.959-4.616L13.95 11h-3.91z" />
-        </g>
+        <path d="m11.307 4-6 16h2.137l1.875-5h6.363l1.875 5h2.137l-6-16h-2.387zm-1.239 9L12.5 6.515 14.932 13h-4.864z" />
     </svg>
 )
 

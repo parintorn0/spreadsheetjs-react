@@ -1,3 +1,4 @@
+import Class from "./DropdownFontColorButton.module.css"
 import { useState } from "react"
 import DropdownButton from "../DropdownButton/DropdownButton"
 import type { DropdownFontColorButtonProps } from "./DropdownFontColorButton.interface"
@@ -33,7 +34,20 @@ const DropdownFontColorButton = ({
                     })
                 }}
                 >
-                    <FontColor />
+                    <div
+                    className={Class.fontColor}
+                    >
+                        <FontColor
+                        width={16}
+                        height={16}
+                        />
+                        <div
+                        style={{
+                            backgroundColor: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`
+                        }}
+                        className={Class.colorStatus}
+                        />
+                    </div>
                 </Button>
             )}
             >

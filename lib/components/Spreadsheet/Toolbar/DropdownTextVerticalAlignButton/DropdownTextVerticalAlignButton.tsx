@@ -19,7 +19,10 @@ const DropdownTextVerticalAlignButton = ({
     }): React.ReactNode => (
         <Button
         onClick={() => {
-            setCurrentTextVerticalAlignButton(children)
+            setCurrentTextVerticalAlignButton({
+                align,
+                node: children
+            })
             setTextVerticalAlign({
                 spreadsheetData,
                 onChange,
@@ -57,13 +60,26 @@ const DropdownTextVerticalAlignButton = ({
         </TextAlignButton>
     )
 
-    const [currentTextVerticalAlignButton, setCurrentTextVerticalAlignButton] = useState<React.ReactNode>(<TextVerticalAlignMiddle />)
+    const [currentTextVerticalAlignButton, setCurrentTextVerticalAlignButton] = useState<{
+        node: React.ReactNode,
+        align: "top" | "middle" | "bottom",
+    }>({
+        node: <TextVerticalAlignMiddle />,
+        align: "middle"
+    })
 
     return (
         <DropDownButton
         button={(
-            <Button>
-                {currentTextVerticalAlignButton}
+            <Button
+            onClick={() => setTextVerticalAlign({
+                spreadsheetData,
+                onChange,
+                selectedCells,
+                align: currentTextVerticalAlignButton.align,
+            })}
+            >
+                {currentTextVerticalAlignButton.node}
             </Button>
         )}
         >

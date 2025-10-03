@@ -1,0 +1,12 @@
+.font-color {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 22px;
+    width: 22px;
+    .color-status {
+        width: calc(100% - 4px);
+        height: 4px;
+        display: flex;
+    }
+}

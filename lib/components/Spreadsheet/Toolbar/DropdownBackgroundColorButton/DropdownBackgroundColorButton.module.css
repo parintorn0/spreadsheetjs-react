@@ -1,0 +1,12 @@
+.bg-color {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 24px;
+    width: 24px;
+    .color-status {
+        width: calc(100% - 4px);
+        height: 4px;
+        display: flex;
+    }
+}

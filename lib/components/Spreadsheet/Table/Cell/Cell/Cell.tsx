@@ -24,7 +24,7 @@ const Cell = ({
 
     const inputRef = useRef<HTMLInputElement>(null)
 
-    const { value, style } = cell
+    const { value, style, imgPath } = cell
     const { rows_height, cols_width } = spreadsheetData
     const height = rows_height.reduce((acc, h, i) => ((
         i >= coordinate.y && i < coordinate.y + (cell.expand_y || 1)
@@ -189,14 +189,48 @@ const Cell = ({
             draggingStartCell,
         })}
         onContextMenu={onContextMenu}
+        onDrag={(e) => {
+            e.preventDefault()
+        }}
+        onDragOver={(e) => {
+            e.preventDefault()
+        }}
+        onDrop={(e) => {
+            e.preventDefault()
+            const files = e.dataTransfer.files
+            if(files.length === 0 || files.length > 1) return
+            const imgBlob = new Blob([files[0]], { type: files[0].type })
+            const imgPath = URL.createObjectURL(imgBlob)
+            cellValueChanged({
+                imgPath,
+                imgBlob,
+                spreadsheetData,
+                onChange,
+                coordinate,
+            })
+        }}
         >
-            {isSameCoordinate(coordinate, editingCell) ? (
+            {imgPath ? (
+                <img
+                src={imgPath}
+                alt="cell-img"
+                style={{
+                    height: `${height-4}px`,
+                    width: `${width-4}px`,
+                    objectFit: "contain",
+                    pointerEvents: "none",
+                    userSelect: "none",
+                }}
+                />
+            ) : (
+                isSameCoordinate(coordinate, editingCell)
+            ) ? (
                 <input
                 ref={inputRef}
                 type="text"
                 value={value}
                 style={{
-                    height: `${height-2}px`,
+                    height: `${height-4}px`,
                     width: `${width-4}px`,
                     fontSize: style?.font_size ? `${style.font_size}px` : "14px",
                 }}

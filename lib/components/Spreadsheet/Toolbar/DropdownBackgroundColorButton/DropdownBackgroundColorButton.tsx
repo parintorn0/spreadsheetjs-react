@@ -1,3 +1,4 @@
+import Class from "./DropdownBackgroundColorButton.module.css"
 import { useState } from "react"
 import DropdownButton from "../DropdownButton/DropdownButton"
 import type { DropdownBackgroundColorButtonProps } from "./DropdownBackgroundColorButton.interface"
@@ -34,7 +35,20 @@ const DropdownBackgroundColorButton = ({
                     })
                 }}
                 >
-                    <BackgroundColor />
+                    <div
+                        className={Class.bgColor}
+                    >
+                        <BackgroundColor
+                        width={16}
+                        height={16}
+                        />
+                        <div
+                        style={{
+                            backgroundColor: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`
+                        }}
+                        className={Class.colorStatus}
+                        />
+                    </div>
                 </Button>
             )}
             >

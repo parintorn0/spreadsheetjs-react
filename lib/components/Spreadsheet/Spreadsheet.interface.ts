@@ -35,6 +35,8 @@ export interface Style {
 
 export interface CellData {
     value: string,
+    imgPath?: string,
+    imgBlob?: Blob,
     from?: Coordinate,
     expand_x?: number,
     expand_y?: number,

@@ -9,6 +9,8 @@ import BoldButton from "./BoldButton/BoldButton"
 import DropdownBorderButton from "./DropdownBorderButton/DropdownBorderButton"
 import MergeCellsButton from "./MergeCellsButton/MergeCellsButton"
 import FontSizeGroup from "./FontSizeGroup/FontSizeGroup"
+import InsertImageButton from "./InsertImageButton/InsertImageButton"
+import DeleteImageButton from "./DeleteImageButton/DeleteImageButton"
 
 const Toolbar = ({
     spreadsheetData,
@@ -82,6 +84,25 @@ const Toolbar = ({
                         setDraggingStartCell={setDraggingStartCell}
                     />
                     <div/>
+                </div>
+                <div/>
+            </div>
+
+            <div className={Class.section}>
+                <div className={Class.sectionName}>
+                    Image
+                </div>
+                <div className={Class.sectionTools}>
+                    <InsertImageButton
+                        spreadsheetData={spreadsheetData}
+                        onChange={onChange}
+                        draggingStartCell={draggingStartCell}
+                    />
+                    <DeleteImageButton
+                        spreadsheetData={spreadsheetData}
+                        onChange={onChange}
+                        draggingStartCell={draggingStartCell}
+                    />
                 </div>
                 <div/>
             </div>
