@@ -68,7 +68,9 @@ const Table = ({
     }, [])
 
     return (
-        <>
+        <div
+        className={Class.tableContainer}
+        >
             <table
             className={Class.table}
             cellPadding={4}
@@ -209,7 +211,7 @@ const Table = ({
                 setIsContextMenuOpen={setIsColumnCellContextMenuOpen}
                 overrideResizeColumnPrompt={overrideResizeColumnPrompt}
             />
-        </>
+        </div>
     )
 }
 

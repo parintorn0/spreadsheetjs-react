@@ -1,39 +1,23 @@
-.table {
-    margin: 8px 16px;
-    border-top: 1px solid transparent;
-    border-left: 1px solid transparent;
-    border-right: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    table-layout: fixed;
-    border-collapse: separate;
-    width: min-content;
-    td {
-        padding: 0;
-    }
-    > thead {
-        > tr {
-            height: 50px;
-            > td {
-                cursor: cell;
-                text-align: center;
-                border-top: 1px solid #ccc;
-                border-left: 1px solid #ccc;
-                border-right: 1px solid transparent;
-                border-bottom: 1px solid transparent;
-                &:not(.selected) {
-                    background-color: #f3f3f3;
-                }
-                &.selected {
-                    background-color: #dcdcdc;
-                }
-            }
+.table-container {
+    overflow-x: auto;
+    width: 100%;
+    .table {
+        margin: 8px 16px;
+        border-top: 1px solid transparent;
+        border-left: 1px solid transparent;
+        border-right: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        table-layout: fixed;
+        border-collapse: separate;
+        width: min-content;
+        td {
+            padding: 0;
         }
-    }
-    > tbody {
-        > tr {
-            cursor: cell;
-            > td {
-                &:first-child {
+        > thead {
+            > tr {
+                height: 50px;
+                > td {
+                    cursor: cell;
                     text-align: center;
                     border-top: 1px solid #ccc;
                     border-left: 1px solid #ccc;
@@ -46,16 +30,36 @@
                         background-color: #dcdcdc;
                     }
                 }
-                &:not(:first-child){
-                    > input {
-                        font-family: inherit;
-                        border: none;
-                        border-radius: 0;
-                        outline: 0;
-                        margin: 0;
-                        padding: 0;
-                        padding-right: 2px;
-                        box-shadow: border-box;
+            }
+        }
+        > tbody {
+            > tr {
+                cursor: cell;
+                > td {
+                    &:first-child {
+                        text-align: center;
+                        border-top: 1px solid #ccc;
+                        border-left: 1px solid #ccc;
+                        border-right: 1px solid transparent;
+                        border-bottom: 1px solid transparent;
+                        &:not(.selected) {
+                            background-color: #f3f3f3;
+                        }
+                        &.selected {
+                            background-color: #dcdcdc;
+                        }
+                    }
+                    &:not(:first-child){
+                        > input {
+                            font-family: inherit;
+                            border: none;
+                            border-radius: 0;
+                            outline: 0;
+                            margin: 0;
+                            padding: 0;
+                            padding-right: 2px;
+                            box-shadow: border-box;
+                        }
                     }
                 }
             }
