@@ -10,8 +10,7 @@ export const cellDoubleClick = ({
 
 export const cellValueChanged = ({
     value,
-    imgPath,
-    imgBlob,
+    image,
     spreadsheetData,
     onChange,
     coordinate,
@@ -25,14 +24,13 @@ export const cellValueChanged = ({
                     y: rowIndex,
                 }
                 if (isSameCoordinate(currentCoordinate, coordinate)) {
-                    if (col.imgPath?.startsWith('blob://')) {
-                        URL.revokeObjectURL(col.imgPath)
+                    if (col.image?.path?.startsWith('blob://')) {
+                        URL.revokeObjectURL(col.image.path);
                     }
                     return {
                         ...col,
                         ...(value && { value }),
-                        ...(imgPath && { imgPath }),
-                        ...(imgBlob && { imgBlob }),
+                        ...(image && { image })
                     }
                 }
                 else {

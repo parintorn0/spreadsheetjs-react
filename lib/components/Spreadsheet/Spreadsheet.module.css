@@ -1,8 +1,13 @@
 .spreadsheetjs {
     box-sizing: border-box;
-    width: 100%;
     user-select: none;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    &.view-only {
+        width: min-content;
+    }
+    &:not(.view-only) {
+        width: 100%;
+    }
 }

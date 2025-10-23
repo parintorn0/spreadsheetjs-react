@@ -6,13 +6,15 @@ import type { InsertImageButtonProps } from "./InsertImageButton.interface"
 const InsertImageButton = ({
     spreadsheetData,
     onChange,
-    draggingStartCell,
+    selectedCells,
+    preAddImage,
 }: InsertImageButtonProps) => (
     <Button
         onClick={() => insertImage({
             spreadsheetData,
             onChange,
-            draggingStartCell,
+            selectedCells,
+            preAddImage,
         })}
         description="Insert Image"
     >

@@ -49,9 +49,12 @@ const Spreadsheet = ({
     cells,
     rows_height,
     cols_width,
+    viewOnlyMode = false,
     onChange = (_: SpreadsheetData) => {},
     overrideResizeColumnPrompt,
     overrideResizeRowPrompt,
+    appendCellMenus,
+    preAddImage,
 }: SpreadsheetProps) => {
     
     const [allRequiredPropProvided, setAllRequiredPropProvided] = useState<boolean | null>(null)
@@ -101,68 +104,155 @@ const Spreadsheet = ({
                         setEditingCell(null)
                         break
                     case "ArrowUp":
-                        setDraggingStartCell({
-                            x: selectedCells.start.x,
-                            y: Math.max(selectedCells.start.y - 1, 0),
-                        })
-                        setSelectedCells(prev => ({
-                            start: {
-                                x: prev.start.x,
-                                y: Math.max(prev.start.y - 1, 0),
-                            },
-                            end: {
-                                x: prev.start.x,
-                                y: Math.max(prev.start.y - 1, 0),
-                            }
-                        }))
+                        if(e.shiftKey) {
+                            setSelectedCells(prev => ({
+                                ...prev,
+                                ...((
+                                    draggingStartCell.y === prev.end.y
+                                ) ? {
+                                    start: {
+                                        ...prev.start,
+                                        y: Math.max(prev.start.y - 1, 0)
+                                    }
+                                } : {
+                                    end: {
+                                        ...prev.end,
+                                        y: Math.max(prev.end.y - 1, 0)
+                                    }
+                                })
+                            }))
+                        }
+                        else {
+                            setDraggingStartCell({
+                                x: selectedCells.start.x,
+                                y: Math.max(selectedCells.start.y - 1, 0),
+                            })
+                            setSelectedCells(prev => ({
+                                start: {
+                                    x: selectedCells.start.x,
+                                    y: Math.max(prev.start.y - 1, 0),
+                                },
+                                end: {
+                                    x: selectedCells.start.x,
+                                    y: Math.max(prev.start.y - 1, 0),
+                                }
+                            }))
+                        }
                         break
                     case "ArrowDown":
-                        setDraggingStartCell({
-                            x: selectedCells.start.x,
-                            y: Math.min(selectedCells.start.y + 1, cells.length - 1),
-                        })
-                        setSelectedCells(prev => ({
-                            start: {
-                                x: prev.start.x,
-                                y: Math.min(prev.start.y + 1, cells.length - 1),
-                            },
-                            end: {
-                                x: prev.start.x,
-                                y: Math.min(prev.start.y + 1, cells.length - 1),
-                            }
-                        }))
+                        if(e.shiftKey) {
+                            setSelectedCells(prev => ({
+                                ...prev,
+                                ...((
+                                    draggingStartCell.y === prev.start.y
+                                ) ? {
+                                    end: {
+                                        ...prev.end,
+                                        y: Math.min(prev.end.y + 1, cells.length - 1)
+                                    }
+                                } : {
+                                    start: {
+                                        ...prev.start,
+                                        y: Math.min(prev.start.y + 1, cells.length - 1)
+                                    }
+                                })
+                            }))
+                        }
+                        else {
+                            setDraggingStartCell({
+                                x: selectedCells.start.x,
+                                y: Math.min(selectedCells.start.y + 1, cells.length - 1),
+                            })
+                            setSelectedCells(prev => ({
+                                start: {
+                                    x: selectedCells.start.x,
+                                    y: Math.min(prev.start.y + 1, cells.length - 1),
+                                },
+                                end: {
+                                    x: selectedCells.start.x,
+                                    y: Math.min(prev.start.y + 1, cells.length - 1),
+                                }
+                            }))
+                        }
                         break
                     case "ArrowLeft":
-                        setDraggingStartCell({
-                            x: Math.max(selectedCells.start.x - 1, 0),
-                            y: selectedCells.start.y,
-                        })
-                        setSelectedCells(prev => ({
-                            start: {
-                                x: Math.max(prev.start.x - 1, 0),
-                                y: prev.start.y,
-                            },
-                            end: {
-                                x: Math.max(prev.start.x - 1, 0),
-                                y: prev.start.y,
-                            }
-                        }))
+                        if(e.shiftKey) {
+                            setSelectedCells(prev => ({
+                                ...prev,
+                                ...((
+                                    draggingStartCell.x === prev.end.x
+                                ) ? {
+                                    start: {
+                                        ...prev.start,
+                                        x: Math.max(prev.start.x - 1, 0)
+                                    }
+                                } : {
+                                    end: {
+                                        ...prev.end,
+                                        x: Math.max(prev.end.x - 1, 0)
+                                    }
+                                })
+                            }))
+                        }
+                        else {
+                            setDraggingStartCell({
+                                x: Math.max(selectedCells.start.x - 1, 0),
+                                y: selectedCells.start.y,
+                            })
+                            setSelectedCells(prev => ({
+                                start: {
+                                    x: Math.max(prev.start.x - 1, 0),
+                                    y: selectedCells.start.y,
+                                },
+                                end: {
+                                    x: Math.max(prev.start.x - 1, 0),
+                                    y: selectedCells.start.y,
+                                }
+                            }))
+                        }
                         break
                     case "ArrowRight":
-                        setDraggingStartCell({
-                            x: Math.min(selectedCells.start.x + 1, cells[0].length - 1),
-                            y: selectedCells.start.y,
+                        if(e.shiftKey) {
+                            setSelectedCells(prev => ({
+                                ...prev,
+                                ...((
+                                    draggingStartCell.x === prev.start.x
+                                ) ? {
+                                    end: {
+                                        ...prev.end,
+                                        x: Math.min(prev.end.x + 1, cells[0].length - 1)
+                                    }
+                                } : {
+                                    start: {
+                                        ...prev.start,
+                                        x: Math.min(prev.start.x + 1, cells[0].length - 1)
+                                    }
+                                })
+                            }))
+                        }
+                        else {
+                            setDraggingStartCell({
+                                x: Math.min(selectedCells.start.x + 1, cells[0].length - 1),
+                                y: selectedCells.start.y,
+                            })
+                            setSelectedCells(prev => ({
+                                start: {
+                                    x: Math.min(prev.start.x + 1, cells[0].length - 1),
+                                    y: selectedCells.start.y,
+                                },
+                                end: {
+                                    x: Math.min(prev.start.x + 1, cells[0].length - 1),
+                                    y: selectedCells.start.y,
+                                }
+                            }))
+                        }
+                        break
+                    case "F2":
+                        setEditingCell(draggingStartCell)
+                        setSelectedCells({
+                            start: draggingStartCell,
+                            end: draggingStartCell,
                         })
-                        setSelectedCells(prev => ({
-                            start: {
-                                x: Math.min(prev.start.x + 1, cells[0].length - 1),
-                                y: prev.start.y,
-                            },
-                            end: {
-                                x: Math.min(prev.start.x + 1, cells[0].length - 1),
-                                y: prev.start.y,
-                            }
-                        }))
                         break
                     default:
                         break
@@ -180,29 +270,35 @@ const Spreadsheet = ({
 
     return (
         <div
-        className={Class.spreadsheetjs}
+        className={`${
+            Class.spreadsheetjs
+        }${viewOnlyMode ? `${Class.viewOnly}` : ""}`}
         >
             {allRequiredPropProvided === null ? (
                 <>Initializing Spreadsheet...</>
             ) : (cells && rows_height && cols_width) ? (
                 <>
-                    <Toolbar
-                    spreadsheetData={{
-                        cells,
-                        rows_height,
-                        cols_width,
-                    }}
-                    onChange={onChange}
-                    selectedCells={selectedCells}
-                    draggingStartCell={draggingStartCell}
-                    setDraggingStartCell={setDraggingStartCell}
-                    />
+                    {!viewOnlyMode && (
+                        <Toolbar
+                        spreadsheetData={{
+                            cells,
+                            rows_height,
+                            cols_width,
+                        }}
+                        onChange={onChange}
+                        selectedCells={selectedCells}
+                        draggingStartCell={draggingStartCell}
+                        setDraggingStartCell={setDraggingStartCell}
+                        preAddImage={preAddImage}
+                        />
+                    )}
                     <Table
                     spreadsheetData={{
                         cells,
                         rows_height,
                         cols_width,
                     }}
+                    viewOnlyMode={viewOnlyMode}
                     onChange={onChange}
                     editingCell={editingCell}
                     setEditingCell={setEditingCell}
@@ -214,6 +310,8 @@ const Spreadsheet = ({
                     setSelectedCells={setSelectedCells}
                     overrideResizeColumnPrompt={overrideResizeColumnPrompt}
                     overrideResizeRowPrompt={overrideResizeRowPrompt}
+                    appendCellMenus={appendCellMenus}
+                    preAddImage={preAddImage}
                     />
                 </>
             ) : (<></>)}

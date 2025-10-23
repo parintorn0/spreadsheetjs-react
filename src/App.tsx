@@ -1,11 +1,12 @@
 import Class from "./App.module.css"
 import Spreadsheet from "../lib/components/Spreadsheet/Spreadsheet"
 import { useState } from "react"
+import type { CellData } from "../lib/components/Spreadsheet/Spreadsheet.interface"
 
 function App() {
 
-  const [cells, setCells] = useState([[{
-    value: "A1"
+  const [cells, setCells] = useState<CellData[][]>([[{
+    value: <div>test</div>
   }, {
     value: "B1"
   }], [{
@@ -21,6 +22,7 @@ function App() {
       <Spreadsheet
         cells={cells}
         rows_height={rowsHeight}
+        // viewOnlyMode={true}
         cols_width={colsWidth}
         onChange={({ cells, rows_height, cols_width }) => {
           setCells(cells)

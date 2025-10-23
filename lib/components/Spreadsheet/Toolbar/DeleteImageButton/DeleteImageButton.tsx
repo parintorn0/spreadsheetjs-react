@@ -6,13 +6,13 @@ import type { DeleteImageButtonProps } from "./DeleteImageButton.interface";
 const DeleteImageButton = ({
     spreadsheetData,
     onChange,
-    draggingStartCell,
+    selectedCells,
 }: DeleteImageButtonProps) => (
     <Button
         onClick={() => deleteImage({
             spreadsheetData,
             onChange,
-            draggingStartCell,
+            selectedCells,
         })}
         description="Delete Image"
     >

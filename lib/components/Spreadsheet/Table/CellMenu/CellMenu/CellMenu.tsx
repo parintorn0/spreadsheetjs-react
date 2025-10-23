@@ -7,10 +7,12 @@ const CellMenu = ({
     onChange,
     selectedCells,
     setSelectedCells,
+    draggingStartCell,
     setDraggingStartCell,
     contextMenuRef,
     isContextMenuOpen,
     setIsContextMenuOpen,
+    appendCellMenus = [],
 }: CellMenuProps) => {
     const { rows_height, cols_width } = spreadsheetData
     const canDeleteRow = selectedCells.end.y - selectedCells.start.y + 1 <  rows_height.length
@@ -113,6 +115,17 @@ const CellMenu = ({
                     Delete {isSingleRowSelected ? "This Row" : "These Rows"}
                 </button>
             )}
+            {appendCellMenus.map(({label, onClick}, index) => (
+                <button
+                    key={index}
+                    onClick={() => {
+                        onClick(spreadsheetData, draggingStartCell, selectedCells)
+                        setIsContextMenuOpen(false)
+                    }}
+                >
+                    {label}
+                </button>
+            ))}
         </div>
     )
 }

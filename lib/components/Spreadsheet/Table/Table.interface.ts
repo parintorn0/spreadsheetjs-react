@@ -1,7 +1,8 @@
-import type { Coordinate, SelectedCells, SpreadsheetData } from "../Spreadsheet.interface";
+import type {AppendCellMenu, Coordinate, Image, SelectedCells, SpreadsheetData} from "../Spreadsheet.interface";
 
 export interface TableProps {
     spreadsheetData: SpreadsheetData,
+    viewOnlyMode: boolean,
     onChange: (spreadsheetData: SpreadsheetData) => void,
     editingCell: Coordinate | null,
     setEditingCell: React.Dispatch<React.SetStateAction<Coordinate | null>>,
@@ -13,4 +14,6 @@ export interface TableProps {
     setSelectedCells: React.Dispatch<React.SetStateAction<SelectedCells>>,
     overrideResizeColumnPrompt?: () => Promise<number | null>,
     overrideResizeRowPrompt?: () => Promise<number | null>,
+    appendCellMenus?: Array<AppendCellMenu>,
+    preAddImage?: (blob: Blob) => Promise<Image | null>,
 }

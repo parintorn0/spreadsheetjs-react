@@ -11,5 +11,12 @@
     &:global(.selected) { box-shadow: -1px -1px 0px #ccc; }
     &:global(.hidden) { display: none; }
     input { background-color: transparent; }
+    .hover, .selection-description {
+        position: absolute;
+        font-size: 12px;
+        background-color: hsl(220, 13%, 91%);
+        padding: 1px;
+        border-radius: .25rem;
+    }
 }
 

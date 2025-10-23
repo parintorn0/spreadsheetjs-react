@@ -511,7 +511,8 @@ export const fontDecrement = ({
 export const insertImage = ({
     spreadsheetData,
     onChange,
-    draggingStartCell,
+    selectedCells,
+    preAddImage,
 }: InsertImageProps) => {
     const inputElem = document.createElement("input")
     inputElem.type = "file"
@@ -519,22 +520,27 @@ export const insertImage = ({
     inputElem.onchange = async () => {
         if(inputElem.files && inputElem.files[0]) {
             const file = inputElem.files[0]
-            const imgBlob = new Blob([file], { type: file.type })
-            const imgPath = URL.createObjectURL(imgBlob)
+            const blob = new Blob([file], { type: file.type })
+            const image = preAddImage && await preAddImage(blob) || {
+                blob,
+                path: URL.createObjectURL(blob)
+            }
             const newCells = spreadsheetData.cells.map((row, rowIndex) => row.map((col, colIndex) => {
                 if(
-                    isSameCoordinate({
-                        x: colIndex,
-                        y: rowIndex,
-                    }, draggingStartCell)
+                    checkIsInsideSelectedCells({
+                        coordinate: {
+                            x: colIndex,
+                            y: rowIndex,
+                        },
+                        selectedCells
+                    })
                 ) {
-                    if(col.imgPath?.startsWith("blob:")) {
-                        URL.revokeObjectURL(col.imgPath)
+                    if(col.image?.path?.startsWith("blob:")) {
+                        col.image.path && URL.revokeObjectURL(col.image.path)
                     }
                     return {
                         ...col,
-                        imgPath,
-                        imgBlob,
+                        image,
                     }
                 }
                 else {
@@ -553,25 +559,27 @@ export const insertImage = ({
 export const deleteImage = ({
     spreadsheetData,
     onChange,
-    draggingStartCell,
+    selectedCells,
 }: DeleteImageProps) => {
     onChange({
         ...spreadsheetData,
         cells: spreadsheetData.cells.map((row, rowIndex) => (
             row.map((col, colIndex) => {
                 if(
-                    isSameCoordinate({
-                        x: colIndex,
-                        y: rowIndex,
-                    }, draggingStartCell)
+                    checkIsInsideSelectedCells({
+                        coordinate: {
+                            x: colIndex,
+                            y: rowIndex,
+                        },
+                        selectedCells,
+                    })
                 ) {
-                    if(col.imgPath?.startsWith("blob:")) {
-                        URL.revokeObjectURL(col.imgPath)
+                    if(col.image?.path?.startsWith("blob:")) {
+                        URL.revokeObjectURL(col.image.path)
                     }
                     return Object.fromEntries(
                         Object.entries(col).filter(([key]) => (
-                            key !== "imgPath" &&
-                            key !== "imgBlob"
+                            key !== "image"
                         ))
                     ) as CellData
                 }

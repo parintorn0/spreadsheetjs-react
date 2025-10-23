@@ -13,6 +13,7 @@ import ColumnCellMenu from "./CellMenu/ColumnCellMenu/ColumnCellMenu"
 
 const Table = ({
     spreadsheetData,
+    viewOnlyMode,
     onChange,
     editingCell,
     setEditingCell,
@@ -24,6 +25,8 @@ const Table = ({
     setSelectedCells,
     overrideResizeColumnPrompt,
     overrideResizeRowPrompt,
+    appendCellMenus,
+    preAddImage,
 }: TableProps) => {
     const edgeThreshold = 5
 
@@ -76,9 +79,18 @@ const Table = ({
             cellPadding={4}
             cellSpacing={0}
             unselectable={"on"}
+            style={{
+                ...(!viewOnlyMode && {
+                    margin: "8px 16px",
+                    borderBottom: "1px solid #ccc",
+                    borderRight: "1px solid #ccc",
+                })
+            }}
             >
                 <colgroup>
-                    <col width={50}/>
+                    {!viewOnlyMode && (
+                        <col width={50}/>
+                    )}
                     {cols_width.map((width, i) => (
                         <col
                         key={i}
@@ -86,50 +98,52 @@ const Table = ({
                         />
                     ))}
                 </colgroup>
-                <thead>
-                    <tr
-                    >
-                        <td
-                        className={(isSameCoordinate(selectedCells.start, {
-                                    x: 0,
-                                    y: 0,
-                                }) &&
-                                isSameCoordinate(selectedCells.end, {
-                                    x: spreadsheetData.cells[0].length - 1,
-                                    y: spreadsheetData.cells.length - 1,
-                                })) ? Class.selected : ""}
-                        onMouseDown={() => allStartDragging({
-                            cells: spreadsheetData.cells,
-                            setIsDragging,
-                            setDraggingStartCell,
-                            setSelectedCells,
-                        })}
-                        onMouseOver={() => allDragging({
-                            cells: spreadsheetData.cells,
-                            isDragging,
-                            setSelectedCells,
-                        })}
-                        />
-                        {cols_width.map((_, i) => (
-                            <ColumnCell
-                            key={String.fromCharCode(65 + i)}
-                            columnIndex={i}
-                            spreadsheetData={spreadsheetData}
-                            onChange={onChange}
-                            isDragging={isDragging}
-                            setIsDragging={setIsDragging}
-                            draggingStartCell={draggingStartCell}
-                            setDraggingStartCell={setDraggingStartCell}
-                            selectedCells={selectedCells}
-                            setSelectedCells={setSelectedCells}
-                            cells={cells}
-                            edgeThreshold={edgeThreshold}
-                            contextMenuRef={columnCellContextMenuRef}
-                            setIsContextMenuOpen={setIsColumnCellContextMenuOpen}
+                {!viewOnlyMode && (
+                    <thead>
+                        <tr
+                        >
+                            <td
+                            className={(isSameCoordinate(selectedCells.start, {
+                                        x: 0,
+                                        y: 0,
+                                    }) &&
+                                    isSameCoordinate(selectedCells.end, {
+                                        x: spreadsheetData.cells[0].length - 1,
+                                        y: spreadsheetData.cells.length - 1,
+                                    })) ? Class.selected : ""}
+                            onMouseDown={() => allStartDragging({
+                                cells: spreadsheetData.cells,
+                                setIsDragging,
+                                setDraggingStartCell,
+                                setSelectedCells,
+                            })}
+                            onMouseOver={() => allDragging({
+                                cells: spreadsheetData.cells,
+                                isDragging,
+                                setSelectedCells,
+                            })}
                             />
-                        ))}
-                    </tr>
-                </thead>
+                            {cols_width.map((_, i) => (
+                                <ColumnCell
+                                key={String.fromCharCode(65 + i)}
+                                columnIndex={i}
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                isDragging={isDragging}
+                                setIsDragging={setIsDragging}
+                                draggingStartCell={draggingStartCell}
+                                setDraggingStartCell={setDraggingStartCell}
+                                selectedCells={selectedCells}
+                                setSelectedCells={setSelectedCells}
+                                cells={cells}
+                                edgeThreshold={edgeThreshold}
+                                contextMenuRef={columnCellContextMenuRef}
+                                setIsContextMenuOpen={setIsColumnCellContextMenuOpen}
+                                />
+                            ))}
+                        </tr>
+                    </thead>
+                )}
                 <tbody>
                     {cells.map((row, rowIndex) => (
                         <tr
@@ -138,21 +152,23 @@ const Table = ({
                             height: `${rows_height[rowIndex]}px`
                         }}
                         >
-                            <RowCell
-                            rowIndex={rowIndex}
-                            isDragging={isDragging}
-                            setIsDragging={setIsDragging}
-                            draggingStartCell={draggingStartCell}
-                            setDraggingStartCell={setDraggingStartCell}
-                            selectedCells={selectedCells}
-                            setSelectedCells={setSelectedCells}
-                            cells={cells}
-                            spreadsheetData={spreadsheetData}
-                            onChange={onChange}
-                            edgeThreshold={edgeThreshold}
-                            contextMenuRef={rowCellContextMenuRef}
-                            setIsContextMenuOpen={setIsRowCellContextMenuOpen}
-                            />
+                            {!viewOnlyMode && (
+                                <RowCell
+                                rowIndex={rowIndex}
+                                isDragging={isDragging}
+                                setIsDragging={setIsDragging}
+                                draggingStartCell={draggingStartCell}
+                                setDraggingStartCell={setDraggingStartCell}
+                                selectedCells={selectedCells}
+                                setSelectedCells={setSelectedCells}
+                                cells={cells}
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                edgeThreshold={edgeThreshold}
+                                contextMenuRef={rowCellContextMenuRef}
+                                setIsContextMenuOpen={setIsRowCellContextMenuOpen}
+                                />
+                            )}
                             {row.map((_, colIndex) => (
                                 <Cell
                                 key={`${String.fromCharCode(65 + colIndex)}${rowIndex}`}
@@ -161,6 +177,7 @@ const Table = ({
                                     x: colIndex,
                                     y: rowIndex,
                                 }}
+                                viewOnlyMode={viewOnlyMode}
                                 editingCell={editingCell}
                                 setEditingCell={setEditingCell}
                                 spreadsheetData={spreadsheetData}
@@ -173,44 +190,51 @@ const Table = ({
                                 setSelectedCells={setSelectedCells}
                                 contextMenuRef={cellContextMenuRef}
                                 setIsContextMenuOpen={setIsCellContextMenuOpen}
+                                preAddImage={preAddImage}
                                 />
                             ))}
                         </tr>
                     ))}
                 </tbody>
             </table>
-            <CellMenu
-                spreadsheetData={spreadsheetData}
-                onChange={onChange}
-                selectedCells={selectedCells}
-                setSelectedCells={setSelectedCells}
-                setDraggingStartCell={setDraggingStartCell}
-                contextMenuRef={cellContextMenuRef}
-                isContextMenuOpen={isCellContextMenuOpen}
-                setIsContextMenuOpen={setIsCellContextMenuOpen}
-            />
-            <RowCellMenu
-                spreadsheetData={spreadsheetData}
-                onChange={onChange}
-                selectedCells={selectedCells}
-                setSelectedCells={setSelectedCells}
-                setDraggingStartCell={setDraggingStartCell}
-                contextMenuRef={rowCellContextMenuRef}
-                isContextMenuOpen={isRowCellContextMenuOpen}
-                setIsContextMenuOpen={setIsRowCellContextMenuOpen}
-                overrideResizeRowPrompt={overrideResizeRowPrompt}
-            />
-            <ColumnCellMenu
-                spreadsheetData={spreadsheetData}
-                onChange={onChange}
-                selectedCells={selectedCells}
-                setSelectedCells={setSelectedCells}
-                setDraggingStartCell={setDraggingStartCell}
-                contextMenuRef={columnCellContextMenuRef}
-                isContextMenuOpen={isColumnCellContextMenuOpen}
-                setIsContextMenuOpen={setIsColumnCellContextMenuOpen}
-                overrideResizeColumnPrompt={overrideResizeColumnPrompt}
-            />
+            {!viewOnlyMode && (
+                <>
+                    <CellMenu
+                        spreadsheetData={spreadsheetData}
+                        onChange={onChange}
+                        selectedCells={selectedCells}
+                        setSelectedCells={setSelectedCells}
+                        draggingStartCell={draggingStartCell}
+                        setDraggingStartCell={setDraggingStartCell}
+                        contextMenuRef={cellContextMenuRef}
+                        isContextMenuOpen={isCellContextMenuOpen}
+                        setIsContextMenuOpen={setIsCellContextMenuOpen}
+                        appendCellMenus={appendCellMenus}
+                    />
+                    <RowCellMenu
+                        spreadsheetData={spreadsheetData}
+                        onChange={onChange}
+                        selectedCells={selectedCells}
+                        setSelectedCells={setSelectedCells}
+                        setDraggingStartCell={setDraggingStartCell}
+                        contextMenuRef={rowCellContextMenuRef}
+                        isContextMenuOpen={isRowCellContextMenuOpen}
+                        setIsContextMenuOpen={setIsRowCellContextMenuOpen}
+                        overrideResizeRowPrompt={overrideResizeRowPrompt}
+                    />
+                    <ColumnCellMenu
+                        spreadsheetData={spreadsheetData}
+                        onChange={onChange}
+                        selectedCells={selectedCells}
+                        setSelectedCells={setSelectedCells}
+                        setDraggingStartCell={setDraggingStartCell}
+                        contextMenuRef={columnCellContextMenuRef}
+                        isContextMenuOpen={isColumnCellContextMenuOpen}
+                        setIsContextMenuOpen={setIsColumnCellContextMenuOpen}
+                        overrideResizeColumnPrompt={overrideResizeColumnPrompt}
+                    />
+                </>
+            )}
         </div>
     )
 }

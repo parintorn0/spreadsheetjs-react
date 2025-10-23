@@ -1,4 +1,4 @@
-import type { Coordinate, SelectedCells, SpreadsheetData } from "../../../Spreadsheet.interface";
+import type {Coordinate, Image, SelectedCells, SpreadsheetData} from "../../../Spreadsheet.interface";
 
 
 export interface CellDoubleClickProps {
@@ -8,8 +8,8 @@ export interface CellDoubleClickProps {
 
 export interface CellValueChangedProps {
     value?: string,
-    imgPath?: string,
-    imgBlob?: Blob,
+    image?: Image,
+    options?: Object,
     spreadsheetData: SpreadsheetData,
     onChange: (data: SpreadsheetData) => void,
     coordinate: Coordinate

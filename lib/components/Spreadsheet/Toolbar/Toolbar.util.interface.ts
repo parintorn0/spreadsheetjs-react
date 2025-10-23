@@ -1,4 +1,4 @@
-import type { Coordinate, SelectedCells, SpreadsheetData } from "../Spreadsheet.interface";
+import type {Coordinate, Image, SelectedCells, SpreadsheetData} from "../Spreadsheet.interface";
 
 export interface SetStyleProps {
     spreadsheetData: SpreadsheetData,
@@ -64,8 +64,10 @@ export interface FontDecrementProps extends SetStyleProps {}
 interface ManageImageProps {
     spreadsheetData: SpreadsheetData,
     onChange: (spreadsheetData: SpreadsheetData) => void,
-    draggingStartCell: Coordinate,
+    selectedCells: SelectedCells,
 }
-export interface InsertImageProps extends ManageImageProps {}
+export interface InsertImageProps extends ManageImageProps {
+    preAddImage?: (blob: Blob) => Promise<Image | null>,
+}
 
 export interface DeleteImageProps extends ManageImageProps {}

@@ -18,6 +18,7 @@ const Toolbar = ({
     selectedCells,
     draggingStartCell,
     setDraggingStartCell,
+    preAddImage,
 }: ToolbarProps) => {
 
     return (
@@ -96,12 +97,13 @@ const Toolbar = ({
                     <InsertImageButton
                         spreadsheetData={spreadsheetData}
                         onChange={onChange}
-                        draggingStartCell={draggingStartCell}
+                        selectedCells={selectedCells}
+                        preAddImage={preAddImage}
                     />
                     <DeleteImageButton
                         spreadsheetData={spreadsheetData}
                         onChange={onChange}
-                        draggingStartCell={draggingStartCell}
+                        selectedCells={selectedCells}
                     />
                 </div>
                 <div/>
