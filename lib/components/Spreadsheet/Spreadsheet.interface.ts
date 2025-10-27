@@ -28,8 +28,8 @@ export interface Border {
 export interface Style {
     font_size?: number,
     text_bold?: boolean,
-    text_align?: string,
-    text_vertical_align?: string,
+    text_align?: "left" | "center" | "right",
+    text_vertical_align?: "top" | "middle" | "bottom",
     background_color?: Color,
     font_color?: Color,
     border?: Border,

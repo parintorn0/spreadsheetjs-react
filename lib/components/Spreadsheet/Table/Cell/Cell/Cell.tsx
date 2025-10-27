@@ -173,10 +173,6 @@ const Cell = ({
         } ${
             (style?.text_bold && "font-bold") || ""
         } ${
-            (style?.text_align && `text-${style.text_align}`) || "text-left"
-        } ${
-            (style?.text_vertical_align && `text-${style.text_vertical_align}`) || "text-middle"
-        } ${
             (isInsideSelectedCells && !viewOnlyMode) && "selected" || ""
         } ${
             cell?.from && "hidden" || ""
@@ -202,6 +198,8 @@ const Cell = ({
             height: `${height-2}px`,
             width: `${width-2}px`,
             cursor: viewOnlyMode ? "default" : "cell",
+            textAlign: style?.text_align || "left",
+            verticalAlign: style?.text_vertical_align || "center"
         }}
         onDoubleClick={() => {
             if(viewOnlyMode) return
