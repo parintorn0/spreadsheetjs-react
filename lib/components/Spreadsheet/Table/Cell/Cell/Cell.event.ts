@@ -29,7 +29,7 @@ export const cellValueChanged = ({
                     }
                     return {
                         ...col,
-                        ...(value && { value }),
+                        ...(value !== undefined && { value }),
                         ...(image && { image })
                     }
                 }
