@@ -104,6 +104,7 @@ const Spreadsheet = ({
                         setEditingCell(null)
                         break
                     case "ArrowUp":
+                        setEditingCell(null)
                         if(e.shiftKey) {
                             setSelectedCells(prev => ({
                                 ...prev,
@@ -140,6 +141,7 @@ const Spreadsheet = ({
                         }
                         break
                     case "ArrowDown":
+                        setEditingCell(null)
                         if(e.shiftKey) {
                             setSelectedCells(prev => ({
                                 ...prev,
@@ -176,6 +178,7 @@ const Spreadsheet = ({
                         }
                         break
                     case "ArrowLeft":
+                        setEditingCell(null)
                         if(e.shiftKey) {
                             setSelectedCells(prev => ({
                                 ...prev,
@@ -212,6 +215,7 @@ const Spreadsheet = ({
                         }
                         break
                     case "ArrowRight":
+                        setEditingCell(null)
                         if(e.shiftKey) {
                             setSelectedCells(prev => ({
                                 ...prev,
