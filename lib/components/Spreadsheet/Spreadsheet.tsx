@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import type { Coordinate, SelectedCells, SpreadsheetData, SpreadsheetProps } from "./Spreadsheet.interface"
 import Toolbar from "./Toolbar/Toolbar"
 import Table from "./Table/Table"
+import { findSelection } from "./Spreadsheet.util"
 
 // import ColorPicker from "./Toolbar/Components/ColorPicker/ColorPicker"
 
@@ -56,9 +57,9 @@ const Spreadsheet = ({
     appendCellMenus,
     preAddImage,
 }: SpreadsheetProps) => {
-    
+
     const [allRequiredPropProvided, setAllRequiredPropProvided] = useState<boolean | null>(null)
-    
+
     useEffect(() => {
         if(cells && rows_height && cols_width) {
             if(cells.length !== rows_height.length || cells.every(row => row.length !== cols_width.length)) {
@@ -84,16 +85,19 @@ const Spreadsheet = ({
         x: 0,
         y: 0,
     })
-    const [selectedCells, setSelectedCells] = useState<SelectedCells>({
-        start: {
-            x: 0,
-            y: 0,
+    const [selectedCells, setSelectedCells] = useState<SelectedCells>(findSelection({
+        selectedCells: {
+            start: {
+                x: 0,
+                y: 0,
+            },
+            end: {
+                x: 0,
+                y: 0,
+            }
         },
-        end: {
-            x: 0,
-            y: 0,
-        }
-    })
+        cells,
+    }))
     const [editingCell, setEditingCell] = useState<Coordinate | null>(null)
 
     useEffect(() => {
