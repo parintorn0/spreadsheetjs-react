@@ -1,7 +1,7 @@
 import Class from "./Spreadsheet.module.css"
 
 import { useEffect, useState } from "react"
-import type { Coordinate, SelectedCells, SpreadsheetData, SpreadsheetProps } from "./Spreadsheet.interface"
+import type { Coordinate, SelectedCells, SpreadsheetProps } from "./Spreadsheet.interface"
 import Toolbar from "./Toolbar/Toolbar"
 import Table from "./Table/Table"
 import { findSelection } from "./Spreadsheet.util"
@@ -51,10 +51,11 @@ const Spreadsheet = ({
     rows_height,
     cols_width,
     viewOnlyMode = false,
-    onChange = (_: SpreadsheetData) => {},
+    onChange,
     overrideResizeColumnPrompt,
     overrideResizeRowPrompt,
     appendCellMenus,
+    appendToolbars,
     preAddImage,
 }: SpreadsheetProps) => {
 
@@ -298,6 +299,7 @@ const Spreadsheet = ({
                         draggingStartCell={draggingStartCell}
                         setDraggingStartCell={setDraggingStartCell}
                         preAddImage={preAddImage}
+                        appendToolbars={appendToolbars}
                         />
                     )}
                     <Table

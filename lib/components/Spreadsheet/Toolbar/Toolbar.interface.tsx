@@ -1,4 +1,4 @@
-import type {Coordinate, Image, SelectedCells, SpreadsheetData} from "../Spreadsheet.interface";
+import type {AppendToolbarSection, Coordinate, Image, SelectedCells, SpreadsheetData} from "../Spreadsheet.interface";
 
 export interface ToolbarProps {
     spreadsheetData: SpreadsheetData,
@@ -7,4 +7,5 @@ export interface ToolbarProps {
     draggingStartCell: Coordinate,
     setDraggingStartCell: React.Dispatch<React.SetStateAction<Coordinate>>,
     preAddImage?: (blob: Blob) => Promise<Image | null>,
+    appendToolbars?: Array<AppendToolbarSection>,
 }

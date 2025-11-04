@@ -60,18 +60,35 @@ export interface SpreadsheetData {
 
 export interface AppendCellMenu {
     label: string,
-    onClick: (spreadsheetData: SpreadsheetData, startDraggingCell: Coordinate, selectedCells: SelectedCells) => Promise<number | null>
+    onClick: (
+        spreadsheetData: SpreadsheetData,
+        draggingStartCell: Coordinate,
+        selectedCells: SelectedCells
+    ) => Promise<void>
 }
 
-export interface SpreadsheetProps {
-    cells: Array<Array<CellData>>,
-    rows_height: Array<number>,
-    cols_width: Array<number>,
+interface AppendToolbarTool {
+    children: React.ReactNode,
+    description: string,
+    onClick: (
+        spreadsheetData: SpreadsheetData,
+        draggingStartCell: Coordinate,
+        selectedCells: SelectedCells,
+    ) => Promise<void>,
+}
+
+export interface AppendToolbarSection {
+    name: string,
+    tools: Array<Array<AppendToolbarTool>>,
+}
+
+export interface SpreadsheetProps extends SpreadsheetData {
     viewOnlyMode?: boolean,
     onChange: (spreadsheet: SpreadsheetData) => void,
     overrideResizeColumnPrompt?: () => Promise<number | null>,
     overrideResizeRowPrompt?: () => Promise<number | null>,
     appendCellMenus?: Array<AppendCellMenu>,
+    appendToolbars?: Array<AppendToolbarSection>,
     preAddImage?: (blob: Blob) => Promise<Image | null>,
 }
 

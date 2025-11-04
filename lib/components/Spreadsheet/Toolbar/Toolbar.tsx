@@ -11,6 +11,7 @@ import MergeCellsButton from "./MergeCellsButton/MergeCellsButton"
 import FontSizeGroup from "./FontSizeGroup/FontSizeGroup"
 import InsertImageButton from "./InsertImageButton/InsertImageButton"
 import DeleteImageButton from "./DeleteImageButton/DeleteImageButton"
+import Button from "./Button/Button"
 
 const Toolbar = ({
     spreadsheetData,
@@ -19,6 +20,7 @@ const Toolbar = ({
     draggingStartCell,
     setDraggingStartCell,
     preAddImage,
+    appendToolbars,
 }: ToolbarProps) => {
 
     return (
@@ -108,6 +110,28 @@ const Toolbar = ({
                 </div>
                 <div/>
             </div>
+            {appendToolbars && appendToolbars.map(({name, tools}) => (
+                <div className={Class.section}>
+                    <div className={Class.sectionName}>
+                        {name}
+                    </div>
+                    {tools.map(row => (
+                        <div className={Class.sectionTools}>
+                            <div/>
+                            {row.map(({description, onClick, children}) => (
+                                <Button
+                                    onClick={async () => await onClick(spreadsheetData, draggingStartCell, selectedCells)}
+                                    description={description}
+                                >
+                                    {children}
+                                </Button>
+                            ))}
+                            <div/>
+                        </div>
+                    ))}
+                    <div/>
+                </div>
+            ))}
         </div>
     )
 }
