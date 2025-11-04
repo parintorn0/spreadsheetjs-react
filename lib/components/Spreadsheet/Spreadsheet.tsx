@@ -54,9 +54,15 @@ const Spreadsheet = ({
     onChange,
     overrideResizeColumnPrompt,
     overrideResizeRowPrompt,
-    appendCellMenus,
-    appendToolbars,
+    appendCellMenu,
+    appendRowCellMenu,
+    appendColumnCellMenu,
+    appendToolbar,
     preAddImage,
+    disableDefaultToolbar,
+    disableDefaultCellMenu,
+    disableDefaultRowCellMenu,
+    disableDefaultColumnCellMenu,
 }: SpreadsheetProps) => {
 
     const [allRequiredPropProvided, setAllRequiredPropProvided] = useState<boolean | null>(null)
@@ -300,7 +306,8 @@ const Spreadsheet = ({
                         draggingStartCell={draggingStartCell}
                         setDraggingStartCell={setDraggingStartCell}
                         preAddImage={preAddImage}
-                        appendToolbars={appendToolbars}
+                        appendToolbar={appendToolbar}
+                        disableDefaultToolbar={disableDefaultToolbar}
                         />
                     )}
                     <Table
@@ -321,8 +328,13 @@ const Spreadsheet = ({
                     setSelectedCells={setSelectedCells}
                     overrideResizeColumnPrompt={overrideResizeColumnPrompt}
                     overrideResizeRowPrompt={overrideResizeRowPrompt}
-                    appendCellMenus={appendCellMenus}
+                    appendCellMenu={appendCellMenu}
+                    appendRowCellMenu={appendRowCellMenu}
+                    appendColumnCellMenu={appendColumnCellMenu}
                     preAddImage={preAddImage}
+                    disableDefaultCellMenu={disableDefaultCellMenu}
+                    disableDefaultRowCellMenu={disableDefaultRowCellMenu}
+                    disableDefaultColumnCellMenu={disableDefaultColumnCellMenu}
                     />
                 </>
             ) : (<></>)}

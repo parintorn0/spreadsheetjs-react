@@ -8,11 +8,14 @@ const ColumnCellMenu = ({
     onChange,
     selectedCells,
     setSelectedCells,
+    draggingStartCell,
     setDraggingStartCell,
     isContextMenuOpen,
     setIsContextMenuOpen,
     contextMenuRef,
     overrideResizeColumnPrompt,
+    appendColumnCellMenu,
+    disableDefaultColumnCellMenu=false,
 }: ColumnCellMenuProps) => {
     const { cols_width } = spreadsheetData
     const canDeleteColumn = selectedCells.end.x - selectedCells.start.x + 1 < cols_width.length
@@ -24,38 +27,53 @@ const ColumnCellMenu = ({
             ref={contextMenuRef}
             className={`${SharedClass.contextMenu} ${isContextMenuOpen ? SharedClass.open : ""}`}
             >
-                {canDeleteColumn && (
-                    <button
-                    onClick={() => {
-                        setIsContextMenuOpen(false)
-                        deleteColumn({
-                            spreadsheetData,
-                            onChange,
-                            selectedCells,
-                            setSelectedCells,
-                            setDraggingStartCell,
-                        })
-                    }}
-                    >
-                        Delete {isSingleColumnSelected ? "This Column" : "These Columns"}
-                    </button>
+                {!disableDefaultColumnCellMenu && (
+                    <>
+                        {canDeleteColumn && (
+                            <button
+                            onClick={() => {
+                                setIsContextMenuOpen(false)
+                                deleteColumn({
+                                    spreadsheetData,
+                                    onChange,
+                                    selectedCells,
+                                    setSelectedCells,
+                                    setDraggingStartCell,
+                                })
+                            }}
+                            >
+                                Delete {isSingleColumnSelected ? "This Column" : "These Columns"}
+                            </button>
+                        )}
+                        <button
+                        onClick={async () => {
+                            setIsContextMenuOpen(false)
+                            const width = overrideResizeColumnPrompt ? await overrideResizeColumnPrompt() : resizeColumnPrompt()
+                            if(width!==null) {
+                                resizeColumn({
+                                    spreadsheetData,
+                                    onChange,
+                                    selectedCells,
+                                    width,
+                                })
+                            }
+                        }}
+                        >
+                            Resize {isSingleColumnSelected ? "This Column" : "These Columns"}
+                        </button>
+                    </>
                 )}
-                <button
-                onClick={async () => {
-                    setIsContextMenuOpen(false)
-                    const width = overrideResizeColumnPrompt ? await overrideResizeColumnPrompt() : resizeColumnPrompt()
-                    if(width!==null) {
-                        resizeColumn({
-                            spreadsheetData,
-                            onChange,
-                            selectedCells,
-                            width,
-                        })
-                    }
-                }}
-                >
-                    Resize {isSingleColumnSelected ? "This Column" : "These Columns"}
-                </button>
+                {appendColumnCellMenu && appendColumnCellMenu.map(({label, onClick}, index) => (
+                    <button
+                        key={index}
+                        onClick={() => {
+                            onClick(spreadsheetData, draggingStartCell, selectedCells)
+                            setIsContextMenuOpen(false)
+                        }}
+                    >
+                        {label}
+                    </button>
+                ))}
             </div>
         </>
     )

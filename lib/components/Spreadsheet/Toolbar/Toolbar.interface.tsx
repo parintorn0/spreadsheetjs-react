@@ -8,5 +8,6 @@ export interface ToolbarProps {
     draggingStartCell: Coordinate,
     setDraggingStartCell: React.Dispatch<React.SetStateAction<Coordinate>>,
     preAddImage?: (blob: Blob) => Promise<Image | null>,
-    appendToolbars?: Array<AppendToolbarSection>,
+    appendToolbar?: Array<AppendToolbarSection>,
+    disableDefaultToolbar?: boolean,
 }

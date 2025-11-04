@@ -27,143 +27,148 @@ const Toolbar = ({
     draggingStartCell,
     setDraggingStartCell,
     preAddImage,
-    appendToolbars,
+    appendToolbar,
+    disableDefaultToolbar=false,
 }: ToolbarProps) => {
 
     return (
         <div className={Class.toolbar}>
-            <div className={Class.section}>
-                <div className={Class.sectionName}>
-                    Cell Customization
-                </div>
-                <div className={Class.sectionTools}>
-                    <DropdownTextAlignButton
-                        spreadsheetData={spreadsheetData}
-                        onChange={onChange}
-                        selectedCells={selectedCells}
-                    />
+            {!disableDefaultToolbar && (
+                <>
+                    <div className={Class.section}>
+                        <div className={Class.sectionName}>
+                            Cell Customization
+                        </div>
+                        <div className={Class.sectionTools}>
+                            <DropdownTextAlignButton
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                            />
 
-                    <DropdownTextVerticalAlignButton
-                        spreadsheetData={spreadsheetData}
-                        onChange={onChange}
-                        selectedCells={selectedCells}
-                    />
-                    <DropdownBackgroundColorButton
-                        spreadsheetData={spreadsheetData}
-                        onChange={onChange}
-                        selectedCells={selectedCells}
-                    />
+                            <DropdownTextVerticalAlignButton
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                            />
+                            <DropdownBackgroundColorButton
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                            />
 
-                    <DropdownBorderButton
-                        spreadsheetData={spreadsheetData}
-                        onChange={onChange}
-                        selectedCells={selectedCells}
-                    />
-                </div>
-                <div className={Class.sectionTools}>
-                    <DropdownFontColorButton
-                        spreadsheetData={spreadsheetData}
-                        onChange={onChange}
-                        selectedCells={selectedCells}
-                    />
-                    <BoldButton
-                        spreadsheetData={spreadsheetData}
-                        onChange={onChange}
-                        selectedCells={selectedCells}
-                        draggingStartCell={draggingStartCell}
-                    />
-                    <FontSizeGroup
-                        spreadsheetData={spreadsheetData}
-                        onChange={onChange}
-                        selectedCells={selectedCells}
-                        draggingStartCell={draggingStartCell}
-                    />
-                </div>
-            </div>
+                            <DropdownBorderButton
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                            />
+                        </div>
+                        <div className={Class.sectionTools}>
+                            <DropdownFontColorButton
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                            />
+                            <BoldButton
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                                draggingStartCell={draggingStartCell}
+                            />
+                            <FontSizeGroup
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                                draggingStartCell={draggingStartCell}
+                            />
+                        </div>
+                    </div>
 
-            <div className={Class.section}>
-                <div className={Class.sectionName}>
-                    Cell Manipulation
-                </div>
-                <div className={Class.sectionTools}>
-                    <div/>
-                    <MergeCellsButton
-                        spreadsheetData={spreadsheetData}
-                        onChange={onChange}
-                        selectedCells={selectedCells}
-                        setDraggingStartCell={setDraggingStartCell}
-                    />
-                    <InsertRowBeforeButton
-                        spreadsheetData={spreadsheetData}
-                        onChange={onChange}
-                        selectedCells={selectedCells}
-                        setSelectedCells={setSelectedCells}
-                        setDraggingStartCell={setDraggingStartCell}
-                    />
-                    <InsertRowAfterButton
-                        spreadsheetData={spreadsheetData}
-                        onChange={onChange}
-                        selectedCells={selectedCells}
-                        setSelectedCells={setSelectedCells}
-                        setDraggingStartCell={setDraggingStartCell}
-                    />
-                    <DeleteRowButton
-                        spreadsheetData={spreadsheetData}
-                        onChange={onChange}
-                        selectedCells={selectedCells}
-                        setSelectedCells={setSelectedCells}
-                        setDraggingStartCell={setDraggingStartCell}
-                    />
-                    <div/>
-                </div>
-                <div className={Class.sectionTools}>
-                    <div/>
-                    <InsertColumnBeforeButton
-                        spreadsheetData={spreadsheetData}
-                        onChange={onChange}
-                        selectedCells={selectedCells}
-                        setSelectedCells={setSelectedCells}
-                        setDraggingStartCell={setDraggingStartCell}
-                    />
-                    <InsertColumnAfterButton
-                        spreadsheetData={spreadsheetData}
-                        onChange={onChange}
-                        selectedCells={selectedCells}
-                        setSelectedCells={setSelectedCells}
-                        setDraggingStartCell={setDraggingStartCell}
-                    />
-                    <DeleteColumnButton
-                        spreadsheetData={spreadsheetData}
-                        onChange={onChange}
-                        selectedCells={selectedCells}
-                        setSelectedCells={setSelectedCells}
-                        setDraggingStartCell={setDraggingStartCell}
-                    />
-                    <div/>
-                </div>
-                <div/>
-            </div>
+                    <div className={Class.section}>
+                        <div className={Class.sectionName}>
+                            Cell Manipulation
+                        </div>
+                        <div className={Class.sectionTools}>
+                            <div/>
+                            <MergeCellsButton
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                                setDraggingStartCell={setDraggingStartCell}
+                            />
+                            <InsertRowBeforeButton
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                                setSelectedCells={setSelectedCells}
+                                setDraggingStartCell={setDraggingStartCell}
+                            />
+                            <InsertRowAfterButton
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                                setSelectedCells={setSelectedCells}
+                                setDraggingStartCell={setDraggingStartCell}
+                            />
+                            <DeleteRowButton
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                                setSelectedCells={setSelectedCells}
+                                setDraggingStartCell={setDraggingStartCell}
+                            />
+                            <div/>
+                        </div>
+                        <div className={Class.sectionTools}>
+                            <div/>
+                            <InsertColumnBeforeButton
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                                setSelectedCells={setSelectedCells}
+                                setDraggingStartCell={setDraggingStartCell}
+                            />
+                            <InsertColumnAfterButton
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                                setSelectedCells={setSelectedCells}
+                                setDraggingStartCell={setDraggingStartCell}
+                            />
+                            <DeleteColumnButton
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                                setSelectedCells={setSelectedCells}
+                                setDraggingStartCell={setDraggingStartCell}
+                            />
+                            <div/>
+                        </div>
+                        <div/>
+                    </div>
 
-            <div className={Class.section}>
-                <div className={Class.sectionName}>
-                    Image
-                </div>
-                <div className={Class.sectionTools}>
-                    <InsertImageButton
-                        spreadsheetData={spreadsheetData}
-                        onChange={onChange}
-                        selectedCells={selectedCells}
-                        preAddImage={preAddImage}
-                    />
-                    <DeleteImageButton
-                        spreadsheetData={spreadsheetData}
-                        onChange={onChange}
-                        selectedCells={selectedCells}
-                    />
-                </div>
-                <div/>
-            </div>
-            {appendToolbars && appendToolbars.map(({name, tools}, toolbarIndex) => (
+                    <div className={Class.section}>
+                        <div className={Class.sectionName}>
+                            Image
+                        </div>
+                        <div className={Class.sectionTools}>
+                            <InsertImageButton
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                                preAddImage={preAddImage}
+                            />
+                            <DeleteImageButton
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                            />
+                        </div>
+                        <div/>
+                    </div>
+                </>
+            )}
+            {appendToolbar && appendToolbar.map(({name, tools}, toolbarIndex) => (
                 <div
                     key={toolbarIndex}
                     className={Class.section}

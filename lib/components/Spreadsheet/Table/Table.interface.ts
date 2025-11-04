@@ -14,6 +14,11 @@ export interface TableProps {
     setSelectedCells: React.Dispatch<React.SetStateAction<SelectedCells>>,
     overrideResizeColumnPrompt?: () => Promise<number | null>,
     overrideResizeRowPrompt?: () => Promise<number | null>,
-    appendCellMenus?: Array<AppendCellMenu>,
+    appendCellMenu?: Array<AppendCellMenu>,
+    appendRowCellMenu?: Array<AppendCellMenu>,
+    appendColumnCellMenu?: Array<AppendCellMenu>,
     preAddImage?: (blob: Blob) => Promise<Image | null>,
+    disableDefaultCellMenu?: boolean,
+    disableDefaultRowCellMenu?: boolean,
+    disableDefaultColumnCellMenu?: boolean,
 }

@@ -87,9 +87,15 @@ export interface SpreadsheetProps extends SpreadsheetData {
     onChange: (spreadsheet: SpreadsheetData) => void,
     overrideResizeColumnPrompt?: () => Promise<number | null>,
     overrideResizeRowPrompt?: () => Promise<number | null>,
-    appendCellMenus?: Array<AppendCellMenu>,
-    appendToolbars?: Array<AppendToolbarSection>,
+    appendCellMenu?: Array<AppendCellMenu>,
+    appendRowCellMenu?: Array<AppendCellMenu>,
+    appendColumnCellMenu?: Array<AppendCellMenu>,
+    appendToolbar?: Array<AppendToolbarSection>,
     preAddImage?: (blob: Blob) => Promise<Image | null>,
+    disableDefaultToolbar?: boolean,
+    disableDefaultCellMenu?: boolean,
+    disableDefaultRowCellMenu?: boolean,
+    disableDefaultColumnCellMenu?: boolean,
 }
 
 export interface SelectedCells {

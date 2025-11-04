@@ -25,8 +25,13 @@ const Table = ({
     setSelectedCells,
     overrideResizeColumnPrompt,
     overrideResizeRowPrompt,
-    appendCellMenus,
+    appendCellMenu,
+    appendRowCellMenu,
+    appendColumnCellMenu,
     preAddImage,
+    disableDefaultCellMenu,
+    disableDefaultRowCellMenu,
+    disableDefaultColumnCellMenu,
 }: TableProps) => {
     const edgeThreshold = 5
 
@@ -51,7 +56,7 @@ const Table = ({
     const cellContextMenuRef = useRef<HTMLDivElement>(null)
     const rowCellContextMenuRef = useRef<HTMLDivElement>(null)
     const columnCellContextMenuRef = useRef<HTMLDivElement>(null)
-    
+
     useEffect(() => {
         const closeContextMenu = (e: MouseEvent) => {
             if(cellContextMenuRef.current && !cellContextMenuRef.current.contains(e.target as Node)) {
@@ -209,29 +214,36 @@ const Table = ({
                         contextMenuRef={cellContextMenuRef}
                         isContextMenuOpen={isCellContextMenuOpen}
                         setIsContextMenuOpen={setIsCellContextMenuOpen}
-                        appendCellMenus={appendCellMenus}
+                        appendCellMenu={appendCellMenu}
+                        disableDefaultCellMenu={disableDefaultCellMenu}
                     />
                     <RowCellMenu
                         spreadsheetData={spreadsheetData}
                         onChange={onChange}
                         selectedCells={selectedCells}
                         setSelectedCells={setSelectedCells}
+                        draggingStartCell={draggingStartCell}
                         setDraggingStartCell={setDraggingStartCell}
                         contextMenuRef={rowCellContextMenuRef}
                         isContextMenuOpen={isRowCellContextMenuOpen}
                         setIsContextMenuOpen={setIsRowCellContextMenuOpen}
                         overrideResizeRowPrompt={overrideResizeRowPrompt}
+                        appendRowCellMenu={appendRowCellMenu}
+                        disableDefaultRowCellMenu={disableDefaultRowCellMenu}
                     />
                     <ColumnCellMenu
                         spreadsheetData={spreadsheetData}
                         onChange={onChange}
                         selectedCells={selectedCells}
                         setSelectedCells={setSelectedCells}
+                        draggingStartCell={draggingStartCell}
                         setDraggingStartCell={setDraggingStartCell}
                         contextMenuRef={columnCellContextMenuRef}
                         isContextMenuOpen={isColumnCellContextMenuOpen}
                         setIsContextMenuOpen={setIsColumnCellContextMenuOpen}
                         overrideResizeColumnPrompt={overrideResizeColumnPrompt}
+                        appendColumnCellMenu={appendColumnCellMenu}
+                        disableDefaultColumnCellMenu={disableDefaultColumnCellMenu}
                     />
                 </>
             )}

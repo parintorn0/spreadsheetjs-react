@@ -10,5 +10,6 @@ export interface CellMenuProps {
     contextMenuRef: React.RefObject<HTMLDivElement>,
     isContextMenuOpen: boolean,
     setIsContextMenuOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    appendCellMenus?: Array<AppendCellMenu>
+    appendCellMenu?: Array<AppendCellMenu>
+    disableDefaultCellMenu?: boolean,
 }
