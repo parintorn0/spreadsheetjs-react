@@ -296,6 +296,7 @@ const Spreadsheet = ({
                         }}
                         onChange={onChange}
                         selectedCells={selectedCells}
+                        setSelectedCells={setSelectedCells}
                         draggingStartCell={draggingStartCell}
                         setDraggingStartCell={setDraggingStartCell}
                         preAddImage={preAddImage}

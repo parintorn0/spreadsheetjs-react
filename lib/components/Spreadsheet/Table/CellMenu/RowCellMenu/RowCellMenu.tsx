@@ -1,5 +1,6 @@
 import SharedClass from "../../Cell/Cell.shared.module.css"
-import { deleteRow, resizeRow, resizeRowPrompt } from "../../Table.event"
+import { resizeRow, resizeRowPrompt } from "../../Table.event"
+import { deleteRow } from "../../../Spreadsheet.event"
 import type { RowCellMenuProps } from "./RowCellMenu.interface"
 
 const RowCellMenu = ({
@@ -16,7 +17,7 @@ const RowCellMenu = ({
     const { rows_height } = spreadsheetData
     const canDeleteRow = selectedCells.end.y - selectedCells.start.y + 1 < rows_height.length
     const isSingleRowSelected = selectedCells.start.y === selectedCells.end.y
-    
+
     return (
         <>
             <div

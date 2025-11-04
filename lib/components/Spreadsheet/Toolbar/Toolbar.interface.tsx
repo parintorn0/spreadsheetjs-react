@@ -4,6 +4,7 @@ export interface ToolbarProps {
     spreadsheetData: SpreadsheetData,
     onChange: (data: SpreadsheetData) => void,
     selectedCells: SelectedCells,
+    setSelectedCells: React.Dispatch<React.SetStateAction<SelectedCells>>,
     draggingStartCell: Coordinate,
     setDraggingStartCell: React.Dispatch<React.SetStateAction<Coordinate>>,
     preAddImage?: (blob: Blob) => Promise<Image | null>,

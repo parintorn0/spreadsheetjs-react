@@ -8,9 +8,10 @@ const Button = ({
     description,
     enableHover=true,
     checked=false,
+    disabled=false,
 }: ButtonProps) => {
     return (
-        <div className={`${Class.btn} ${enableHover ? Class.hasHover : ""} ${checked ? Class.checked : ""}`}>
+        <div className={`${Class.btn} ${enableHover ? Class.hasHover : ""} ${checked ? Class.checked : ""} ${disabled ? Class.disabled : ""}`}>
             <button className={Class.icon}
             onClick={onClick}
             >

@@ -1,5 +1,6 @@
 import SharedClass from "../../Cell/Cell.shared.module.css"
-import { deleteColumn, resizeColumn, resizeColumnPrompt } from "../../Table.event"
+import { resizeColumn, resizeColumnPrompt } from "../../Table.event"
+import { deleteColumn } from "../../../Spreadsheet.event"
 import type { ColumnCellMenuProps } from "./ColumnCellMenu.interface"
 
 const ColumnCellMenu = ({

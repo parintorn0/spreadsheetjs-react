@@ -8,6 +8,12 @@ import DropdownFontColorButton from "./DropdownFontColorButton/DropdownFontColor
 import BoldButton from "./BoldButton/BoldButton"
 import DropdownBorderButton from "./DropdownBorderButton/DropdownBorderButton"
 import MergeCellsButton from "./MergeCellsButton/MergeCellsButton"
+import InsertRowBeforeButton from "./InsertRowButton/InsertRowBeforeButton"
+import InsertRowAfterButton from "./InsertRowButton/InsertRowAfterButton"
+import DeleteRowButton from "./DeleteRowButton/DeleteRowButton"
+import InsertColumnBeforeButton from "./InsertColumnButton/InsertColumnBeforeButton"
+import InsertColumnAfterButton from "./InsertColumnButton/InsertColumnAfterButton"
+import DeleteColumnButton from "./DeleteColumnButton/DeleteColumnButton"
 import FontSizeGroup from "./FontSizeGroup/FontSizeGroup"
 import InsertImageButton from "./InsertImageButton/InsertImageButton"
 import DeleteImageButton from "./DeleteImageButton/DeleteImageButton"
@@ -17,6 +23,7 @@ const Toolbar = ({
     spreadsheetData,
     onChange,
     selectedCells,
+    setSelectedCells,
     draggingStartCell,
     setDraggingStartCell,
     preAddImage,
@@ -86,6 +93,52 @@ const Toolbar = ({
                         selectedCells={selectedCells}
                         setDraggingStartCell={setDraggingStartCell}
                     />
+                    <InsertRowBeforeButton
+                        spreadsheetData={spreadsheetData}
+                        onChange={onChange}
+                        selectedCells={selectedCells}
+                        setSelectedCells={setSelectedCells}
+                        setDraggingStartCell={setDraggingStartCell}
+                    />
+                    <InsertRowAfterButton
+                        spreadsheetData={spreadsheetData}
+                        onChange={onChange}
+                        selectedCells={selectedCells}
+                        setSelectedCells={setSelectedCells}
+                        setDraggingStartCell={setDraggingStartCell}
+                    />
+                    <DeleteRowButton
+                        spreadsheetData={spreadsheetData}
+                        onChange={onChange}
+                        selectedCells={selectedCells}
+                        setSelectedCells={setSelectedCells}
+                        setDraggingStartCell={setDraggingStartCell}
+                    />
+                    <div/>
+                </div>
+                <div className={Class.sectionTools}>
+                    <div/>
+                    <InsertColumnBeforeButton
+                        spreadsheetData={spreadsheetData}
+                        onChange={onChange}
+                        selectedCells={selectedCells}
+                        setSelectedCells={setSelectedCells}
+                        setDraggingStartCell={setDraggingStartCell}
+                    />
+                    <InsertColumnAfterButton
+                        spreadsheetData={spreadsheetData}
+                        onChange={onChange}
+                        selectedCells={selectedCells}
+                        setSelectedCells={setSelectedCells}
+                        setDraggingStartCell={setDraggingStartCell}
+                    />
+                    <DeleteColumnButton
+                        spreadsheetData={spreadsheetData}
+                        onChange={onChange}
+                        selectedCells={selectedCells}
+                        setSelectedCells={setSelectedCells}
+                        setDraggingStartCell={setDraggingStartCell}
+                    />
                     <div/>
                 </div>
                 <div/>
@@ -110,16 +163,23 @@ const Toolbar = ({
                 </div>
                 <div/>
             </div>
-            {appendToolbars && appendToolbars.map(({name, tools}) => (
-                <div className={Class.section}>
+            {appendToolbars && appendToolbars.map(({name, tools}, toolbarIndex) => (
+                <div
+                    key={toolbarIndex}
+                    className={Class.section}
+                >
                     <div className={Class.sectionName}>
                         {name}
                     </div>
-                    {tools.map(row => (
-                        <div className={Class.sectionTools}>
+                    {tools.map((row, rowIndex) => (
+                        <div
+                            key={rowIndex}
+                            className={Class.sectionTools}
+                        >
                             <div/>
-                            {row.map(({description, onClick, children}) => (
+                            {row.map(({description, onClick, children}, index) => (
                                 <Button
+                                    key={index}
                                     onClick={async () => await onClick(spreadsheetData, draggingStartCell, selectedCells)}
                                     description={description}
                                 >

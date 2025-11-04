@@ -28,4 +28,8 @@
     &.checked > .icon {
         background-color: #ccc;
     }
+    &.disabled {
+        pointer-events: none;
+        opacity: 20%;
+    }
 }

@@ -1,5 +1,5 @@
 import SharedClass from "../../Cell/Cell.shared.module.css"
-import { deleteColumn, deleteRow, insertColumn, insertRow } from "../../Table.event"
+import { deleteColumn, deleteRow, insertColumn, insertRow } from "../../../Spreadsheet.event"
 import type { CellMenuProps } from "./CellMenu.interface"
 
 const CellMenu = ({

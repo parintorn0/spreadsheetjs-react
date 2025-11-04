@@ -15,3 +15,9 @@ export { BorderTop, BorderRight, BorderBottom, BorderLeft, BorderAll, BorderInsi
 export { BorderSolid, BorderDotted, BorderDashed } from "./BorderStyle"
 export { default as InsertImage } from "./InsertImage"
 export { default as DeleteImage } from "./DeleteImage"
+export { default as InsertRowBefore } from './InsertRowBefore'
+export { default as InsertRowAfter } from './InsertRowAfter'
+export { default as InsertColumnBefore } from './InsertColumnBefore'
+export { default as InsertColumnAfter } from './InsertColumnAfter'
+export { default as DeleteRow } from './DeleteRow'
+export { default as DeleteColumn } from './DeleteColumn'

@@ -4,4 +4,5 @@ export interface ButtonProps {
     description?: string,
     enableHover?: boolean,
     checked?: boolean,
+    disabled?: boolean
 }
