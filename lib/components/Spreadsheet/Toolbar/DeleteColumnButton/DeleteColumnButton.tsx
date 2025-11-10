@@ -9,6 +9,7 @@ const DeleteColumnButton = ({
     selectedCells,
     setSelectedCells,
     setDraggingStartCell,
+    canDeleteColumn,
 }: DeleteColumnButtonProps) => {
     return (
         <Button
@@ -20,7 +21,7 @@ const DeleteColumnButton = ({
                 setDraggingStartCell,
             })}
             description="Delete Column"
-            disabled={selectedCells.end.x - selectedCells.start.x === spreadsheetData.cols_width.length - 1}
+            disabled={!canDeleteColumn}
         >
             <DeleteColumn />
         </Button>

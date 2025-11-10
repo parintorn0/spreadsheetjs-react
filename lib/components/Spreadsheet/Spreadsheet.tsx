@@ -68,8 +68,8 @@ const Spreadsheet = ({
     const [allRequiredPropProvided, setAllRequiredPropProvided] = useState<boolean | null>(null)
 
     useEffect(() => {
-        if(cells && rows_height && cols_width) {
-            if(cells.length !== rows_height.length || cells.every(row => row.length !== cols_width.length)) {
+        if (cells && rows_height && cols_width) {
+            if (cells.length !== rows_height.length || cells.every(row => row.length !== cols_width.length)) {
                 setAllRequiredPropProvided(false)
                 throw new Error("SpreadsheetJSReact: The length of rows_height must match the number of rows in cells, and the length of cols_width must match the number of columns in cells.")
             }
@@ -77,7 +77,7 @@ const Spreadsheet = ({
                 setAllRequiredPropProvided(true)
             }
         }
-        else if(!cells && !rows_height && !cols_width) {
+        else if (!cells && !rows_height && !cols_width) {
             onChange(defaultSpreadsheetData)
             setAllRequiredPropProvided(true)
         }
@@ -109,14 +109,14 @@ const Spreadsheet = ({
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if(cells) {
-                switch(e.key) {
+            if (cells) {
+                switch (e.key) {
                     case "Escape":
                         setEditingCell(null)
                         break
                     case "ArrowUp":
                         setEditingCell(null)
-                        if(e.shiftKey) {
+                        if (e.shiftKey) {
                             setSelectedCells(prev => ({
                                 ...prev,
                                 ...((
@@ -153,7 +153,7 @@ const Spreadsheet = ({
                         break
                     case "ArrowDown":
                         setEditingCell(null)
-                        if(e.shiftKey) {
+                        if (e.shiftKey) {
                             setSelectedCells(prev => ({
                                 ...prev,
                                 ...((
@@ -190,7 +190,7 @@ const Spreadsheet = ({
                         break
                     case "ArrowLeft":
                         setEditingCell(null)
-                        if(e.shiftKey) {
+                        if (e.shiftKey) {
                             setSelectedCells(prev => ({
                                 ...prev,
                                 ...((
@@ -227,7 +227,7 @@ const Spreadsheet = ({
                         break
                     case "ArrowRight":
                         setEditingCell(null)
-                        if(e.shiftKey) {
+                        if (e.shiftKey) {
                             setSelectedCells(prev => ({
                                 ...prev,
                                 ...((
@@ -283,6 +283,54 @@ const Spreadsheet = ({
         draggingStartCell
     ])
 
+    const canInsertRowAbove = !cells[selectedCells.start.y].some(cell => cell.from && cell.from.y < selectedCells.start.y)
+    const canInsertRowBelow = !cells[selectedCells.end.y].some(cell => cell.expand_y || (
+        cell.from && (selectedCells.end.y + 1 < (cells[cell.from.y][cell.from.x].expand_y || 1) + cell.from.y)
+    ))
+    const canInsertColumnBefore = !cells.some(row => {
+        const cell = row[selectedCells.start.x]
+        return cell.from && cell.from.x < selectedCells.start.x
+    })
+
+    const canInsertColumnAfter = !cells.some(row => {
+        const cell = row[selectedCells.end.x]
+        return cell.from && (selectedCells.end.x + 1 < (cells[cell.from.y][cell.from.x].expand_x || 1) + cell.from.x)
+    })
+    // const canDeleteRow = selectedCells.end.y - selectedCells.start.y + 1 < rows_height.length
+    // const canDeleteColumn = selectedCells.end.x - selectedCells.start.x + 1 < cols_width.length
+    // const canDeleteRow = !cells.some((row, rowIndex) => {
+    //     return row.some(cell => {
+    //         return selectedCells.start.y <= rowIndex &&
+    //             rowIndex <= selectedCells.end.y && (
+    //                 cell.from && (
+    //                     cell.from.y > selectedCells.start.y
+    //                 ) || (
+    //                     (cell.expand_y || 1) + rowIndex - 1 > selectedCells.end.y
+    //                 )
+    //             )
+    //     })
+    // })
+    const canDeleteRow = !cells.some((row, rowIndex) => row.some(cell => (
+        selectedCells.start.y <= rowIndex &&
+        rowIndex <= selectedCells.end.y && (
+            cell.from && (
+                cell.from.y < selectedCells.start.y
+            ) || (
+                (cell.expand_y || 1) + rowIndex - 1 > selectedCells.end.y
+            )
+        )
+    )))
+    const canDeleteColumn = !cells.some(row => row.some((cell, cellIndex) => (
+        selectedCells.start.x <= cellIndex &&
+        cellIndex <= selectedCells.end.x && (
+            cell.from && (
+                cell.from.x < selectedCells.start.x
+            ) || (
+                (cell.expand_x || 1) + cellIndex - 1 > selectedCells.end.x
+            )
+        )
+    )))
+
     return (
         <div
         className={`${
@@ -305,6 +353,12 @@ const Spreadsheet = ({
                         setSelectedCells={setSelectedCells}
                         draggingStartCell={draggingStartCell}
                         setDraggingStartCell={setDraggingStartCell}
+                        canInsertRowAbove={canInsertRowAbove}
+                        canInsertRowBelow={canInsertRowBelow}
+                        canDeleteRow={canDeleteRow}
+                        canInsertColumnBefore={canInsertColumnBefore}
+                        canInsertColumnAfter={canInsertColumnAfter}
+                        canDeleteColumn={canDeleteColumn}
                         preAddImage={preAddImage}
                         appendToolbar={appendToolbar}
                         disableDefaultToolbar={disableDefaultToolbar}
@@ -326,6 +380,12 @@ const Spreadsheet = ({
                     setDraggingStartCell={setDraggingStartCell}
                     selectedCells={selectedCells}
                     setSelectedCells={setSelectedCells}
+                    canInsertRowAbove={canInsertRowAbove}
+                    canInsertRowBelow={canInsertRowBelow}
+                    canDeleteRow={canDeleteRow}
+                    canInsertColumnBefore={canInsertColumnBefore}
+                    canInsertColumnAfter={canInsertColumnAfter}
+                    canDeleteColumn={canDeleteColumn}
                     overrideResizeColumnPrompt={overrideResizeColumnPrompt}
                     overrideResizeRowPrompt={overrideResizeRowPrompt}
                     appendCellMenu={appendCellMenu}

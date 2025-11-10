@@ -10,6 +10,12 @@ export interface CellMenuProps {
     contextMenuRef: React.RefObject<HTMLDivElement>,
     isContextMenuOpen: boolean,
     setIsContextMenuOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    canInsertRowAbove: boolean,
+    canInsertRowBelow: boolean,
+    canDeleteRow: boolean,
+    canInsertColumnBefore: boolean,
+    canInsertColumnAfter: boolean,
+    canDeleteColumn: boolean,
     appendCellMenu?: Array<AppendCellMenu>
     disableDefaultCellMenu?: boolean,
 }

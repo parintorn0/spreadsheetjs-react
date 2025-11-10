@@ -6,4 +6,5 @@ export interface DeleteColumnButtonProps {
     selectedCells: SelectedCells,
     setSelectedCells: React.Dispatch<React.SetStateAction<SelectedCells>>
     setDraggingStartCell:  React.Dispatch<React.SetStateAction<Coordinate>>
+    canDeleteColumn: boolean,
 }

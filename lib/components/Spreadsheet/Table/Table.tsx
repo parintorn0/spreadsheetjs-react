@@ -23,6 +23,12 @@ const Table = ({
     setDraggingStartCell,
     selectedCells,
     setSelectedCells,
+    canInsertRowAbove,
+    canInsertRowBelow,
+    canDeleteRow,
+    canInsertColumnBefore,
+    canInsertColumnAfter,
+    canDeleteColumn,
     overrideResizeColumnPrompt,
     overrideResizeRowPrompt,
     appendCellMenu,
@@ -214,6 +220,12 @@ const Table = ({
                         contextMenuRef={cellContextMenuRef}
                         isContextMenuOpen={isCellContextMenuOpen}
                         setIsContextMenuOpen={setIsCellContextMenuOpen}
+                        canInsertRowAbove={canInsertRowAbove}
+                        canInsertRowBelow={canInsertRowBelow}
+                        canDeleteRow={canDeleteRow}
+                        canInsertColumnBefore={canInsertColumnBefore}
+                        canInsertColumnAfter={canInsertColumnAfter}
+                        canDeleteColumn={canDeleteColumn}
                         appendCellMenu={appendCellMenu}
                         disableDefaultCellMenu={disableDefaultCellMenu}
                     />

@@ -8,6 +8,10 @@ interface InsertColumnButtonProps {
     setDraggingStartCell:  React.Dispatch<React.SetStateAction<Coordinate>>
 }
 
-export interface InsertColumnBeforeButtonProps extends InsertColumnButtonProps {}
+export interface InsertColumnBeforeButtonProps extends InsertColumnButtonProps {
+    canInsertRowBefore: boolean,
+}
 
-export interface InsertColumnAfterButtonProps extends InsertColumnButtonProps {}
+export interface InsertColumnAfterButtonProps extends InsertColumnButtonProps {
+    canInsertRowAfter: boolean,
+}

@@ -9,6 +9,7 @@ const InsertRowBeforeButton = ({
     selectedCells,
     setSelectedCells,
     setDraggingStartCell,
+    canDeleteRow,
 }: DeleteRowButtonProps) => {
     return (
         <Button
@@ -20,7 +21,7 @@ const InsertRowBeforeButton = ({
                 setDraggingStartCell,
             })}
             description="Delete Row"
-            disabled={selectedCells.end.y - selectedCells.start.y === spreadsheetData.rows_height.length - 1}
+            disabled={!canDeleteRow}
         >
             <DeleteRow />
         </Button>

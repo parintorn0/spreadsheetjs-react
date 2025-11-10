@@ -3,12 +3,13 @@ import {insertColumn} from "../../Spreadsheet.event"
 import {InsertColumnAfter} from "../../../../assets/icons/Icon"
 import type { InsertColumnAfterButtonProps } from "./InsertCulumnButton.interface"
 
-const DeleteRowButton = ({
+const InsertColumnAfterButton = ({
     spreadsheetData,
     onChange,
     selectedCells,
     setSelectedCells,
     setDraggingStartCell,
+    canInsertRowAfter,
 }: InsertColumnAfterButtonProps) => {
     return (
         <Button
@@ -21,10 +22,11 @@ const DeleteRowButton = ({
                 after: true,
             })}
             description="Insert Column After"
+            disabled={!canInsertRowAfter}
         >
             <InsertColumnAfter />
         </Button>
     )
 }
 
-export default DeleteRowButton
+export default InsertColumnAfterButton

@@ -154,7 +154,15 @@ export const deleteColumn = ({
         ...spreadsheetData,
         cells: spreadsheetData.cells.map(row => row.length > 1 ? [
             ...row.slice(0, selectedCells.start.x),
-            ...row.slice(selectedCells.end.x + 1, row.length),
+            ...row.slice(selectedCells.end.x + 1, row.length).map(cell => ({
+                ...cell,
+                ...(cell.from && {
+                    from: {
+                        ...cell.from,
+                        x: cell.from.x - 1
+                    }
+                })
+            })),
         ] : row),
         cols_width: spreadsheetData.cols_width.length > 1 ? [
             ...spreadsheetData.cols_width.slice(0, selectedCells.start.x),
@@ -188,7 +196,15 @@ export const deleteRow = ({
         ...spreadsheetData,
         cells: [
             ...spreadsheetData.cells.slice(0, selectedCells.start.y),
-            ...spreadsheetData.cells.slice(selectedCells.end.y + 1, spreadsheetData.cells.length),
+            ...spreadsheetData.cells.slice(selectedCells.end.y + 1, spreadsheetData.cells.length).map(row => row.map(cell => ({
+                ...cell,
+                ...(cell.from && {
+                    from: {
+                        ...cell.from,
+                        y: cell.from.y - 1
+                    }
+                })
+            }))),
         ],
         rows_height:[
             ...spreadsheetData.rows_height.slice(0, selectedCells.start.y),

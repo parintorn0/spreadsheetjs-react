@@ -9,6 +9,7 @@ const InsertRowBeforeButton = ({
     selectedCells,
     setSelectedCells,
     setDraggingStartCell,
+    canInsertRowAbove,
 }: InsertRowBeforeButtonProps) => {
     return (
         <Button
@@ -21,6 +22,7 @@ const InsertRowBeforeButton = ({
                 after: false,
             })}
             description="Insert Row Above"
+            disabled={!canInsertRowAbove}
         >
             <InsertRowBefore />
         </Button>

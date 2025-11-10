@@ -3,12 +3,13 @@ import {insertColumn} from "../../Spreadsheet.event"
 import {InsertColumnBefore} from "../../../../assets/icons/Icon"
 import type { InsertColumnBeforeButtonProps } from "./InsertCulumnButton.interface"
 
-const InsertRowBeforeButton = ({
+const InsertColumnBeforeButton = ({
     spreadsheetData,
     onChange,
     selectedCells,
     setSelectedCells,
     setDraggingStartCell,
+    canInsertRowBefore,
 }: InsertColumnBeforeButtonProps) => {
     return (
         <Button
@@ -21,10 +22,11 @@ const InsertRowBeforeButton = ({
                 after: false,
             })}
             description="Insert Column Before"
+            disabled={!canInsertRowBefore}
         >
             <InsertColumnBefore />
         </Button>
     )
 }
 
-export default InsertRowBeforeButton
+export default InsertColumnBeforeButton

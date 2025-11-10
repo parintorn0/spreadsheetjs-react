@@ -10,4 +10,10 @@ export interface ToolbarProps {
     preAddImage?: (blob: Blob) => Promise<Image | null>,
     appendToolbar?: Array<AppendToolbarSection>,
     disableDefaultToolbar?: boolean,
+    canInsertRowAbove: boolean,
+    canInsertRowBelow: boolean,
+    canDeleteRow: boolean,
+    canInsertColumnBefore: boolean,
+    canInsertColumnAfter: boolean,
+    canDeleteColumn: boolean,
 }

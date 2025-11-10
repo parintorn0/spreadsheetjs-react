@@ -5,5 +5,6 @@ export interface DeleteRowButtonProps {
     onChange: (spreadsheetData: SpreadsheetData) => void
     selectedCells: SelectedCells,
     setSelectedCells: React.Dispatch<React.SetStateAction<SelectedCells>>
-    setDraggingStartCell:  React.Dispatch<React.SetStateAction<Coordinate>>
+    setDraggingStartCell:  React.Dispatch<React.SetStateAction<Coordinate>>,
+    canDeleteRow: boolean,
 }

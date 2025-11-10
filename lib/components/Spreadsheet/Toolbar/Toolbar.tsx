@@ -26,6 +26,12 @@ const Toolbar = ({
     setSelectedCells,
     draggingStartCell,
     setDraggingStartCell,
+    canInsertRowAbove,
+    canInsertRowBelow,
+    canDeleteRow,
+    canInsertColumnBefore,
+    canInsertColumnAfter,
+    canDeleteColumn,
     preAddImage,
     appendToolbar,
     disableDefaultToolbar=false,
@@ -102,6 +108,7 @@ const Toolbar = ({
                                 selectedCells={selectedCells}
                                 setSelectedCells={setSelectedCells}
                                 setDraggingStartCell={setDraggingStartCell}
+                                canInsertRowAbove={canInsertRowAbove}
                             />
                             <InsertRowAfterButton
                                 spreadsheetData={spreadsheetData}
@@ -109,6 +116,7 @@ const Toolbar = ({
                                 selectedCells={selectedCells}
                                 setSelectedCells={setSelectedCells}
                                 setDraggingStartCell={setDraggingStartCell}
+                                canInsertRowBelow={canInsertRowBelow}
                             />
                             <DeleteRowButton
                                 spreadsheetData={spreadsheetData}
@@ -116,6 +124,7 @@ const Toolbar = ({
                                 selectedCells={selectedCells}
                                 setSelectedCells={setSelectedCells}
                                 setDraggingStartCell={setDraggingStartCell}
+                                canDeleteRow={canDeleteRow}
                             />
                             <div/>
                         </div>
@@ -127,6 +136,7 @@ const Toolbar = ({
                                 selectedCells={selectedCells}
                                 setSelectedCells={setSelectedCells}
                                 setDraggingStartCell={setDraggingStartCell}
+                                canInsertRowBefore={canInsertColumnBefore}
                             />
                             <InsertColumnAfterButton
                                 spreadsheetData={spreadsheetData}
@@ -134,6 +144,7 @@ const Toolbar = ({
                                 selectedCells={selectedCells}
                                 setSelectedCells={setSelectedCells}
                                 setDraggingStartCell={setDraggingStartCell}
+                                canInsertRowAfter={canInsertColumnAfter}
                             />
                             <DeleteColumnButton
                                 spreadsheetData={spreadsheetData}
@@ -141,6 +152,7 @@ const Toolbar = ({
                                 selectedCells={selectedCells}
                                 setSelectedCells={setSelectedCells}
                                 setDraggingStartCell={setDraggingStartCell}
+                                canDeleteColumn={canDeleteColumn}
                             />
                             <div/>
                         </div>
