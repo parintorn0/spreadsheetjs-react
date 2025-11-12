@@ -1,6 +1,6 @@
 import type { Style, CellData, Border } from "../Spreadsheet.interface"
 import type { DeleteImageProps, FontDecrementProps, FontIncrementProps, InsertImageProps, MergeCellsProps, SetBackgroundColorProps, SetBoldProps, SetBorderProps, SetFontColorProps, SetFontSizeProps, SetTextAlignProps, SetTextVerticalAlignProps } from "./Toolbar.util.interface"
-import { checkIsInsideSelectedCells, isSameCoordinate } from "../Spreadsheet.util"
+import { checkIsInsideSelectedCells } from "../Spreadsheet.util"
 
 export const setTextAlign = ({
     spreadsheetData,
@@ -332,52 +332,31 @@ export const mergeCells = ({
     selectedCells,
     setDraggingStartCell,
 }: MergeCellsProps) => {
-    const { cells, merged_cells } = spreadsheetData
+    const { merged_cells } = spreadsheetData
     const inMergedCells = merged_cells.reduce<Array<number>>((arr, mergedCellRange, index) => {
-        const normalizedMergedCells = {
-            start: {
-                x: Math.min(mergedCellRange.start.x, mergedCellRange.end.x),
-                y: Math.min(mergedCellRange.start.y, mergedCellRange.end.y)
-            },
-            end: {
-                x: Math.max(mergedCellRange.start.x, mergedCellRange.end.x),
-                y: Math.max(mergedCellRange.start.y, mergedCellRange.end.y)
-            }
-        }
-        const normalizedSelectedCells = {
-            start: {
-                x: Math.min(selectedCells.start.x, selectedCells.end.x),
-                y: Math.min(selectedCells.start.y, selectedCells.end.y)
-            },
-            end: {
-                x: Math.max(selectedCells.start.x, selectedCells.end.x),
-                y: Math.max(selectedCells.start.y, selectedCells.end.y)
-            }
-        }
-        const overlapStartX = Math.max(normalizedMergedCells.start.x, normalizedSelectedCells.start.x);
-        const overlapStartY = Math.max(normalizedMergedCells.start.y, normalizedSelectedCells.start.y);
-        const overlapEndX   = Math.min(normalizedMergedCells.end.x, normalizedSelectedCells.end.x);
-        const overlapEndY   = Math.min(normalizedMergedCells.end.y, normalizedSelectedCells.end.y);
-        if(overlapStartX < overlapEndX && overlapStartY < overlapEndY) {
+        if(
+            selectedCells.start.x <= mergedCellRange.start.x &&
+            mergedCellRange.start.x <= selectedCells.end.x &&
+            selectedCells.start.y <= mergedCellRange.start.y &&
+            mergedCellRange.start.y <= selectedCells.end.y
+        ) {
             return [
                 ...arr,
                 index,
             ]
         }
-        else {
-            return arr
-        }
+        return arr
     }, [])
     if(inMergedCells.length > 0) {
         onChange({
             ...spreadsheetData,
-            merged_cells: [
-                ...merged_cells.slice(0, inMergedCells[0]),
-                ...merged_cells.slice(inMergedCells[0] + 1)
-            ]
+            merged_cells: merged_cells.filter((_, index) => !inMergedCells.includes(index))
         })
     }
-    else {
+    else if(!(
+        selectedCells.start.x === selectedCells.end.x &&
+        selectedCells.start.y === selectedCells.end.y
+    )) {
         onChange({
             ...spreadsheetData,
             merged_cells: [

@@ -115,7 +115,9 @@ const Spreadsheet = ({
                         setEditingCell(null)
                         break
                     case "ArrowUp":
-                        setEditingCell(null)
+                        if(editingCell) {
+                            break
+                        }
                         if (e.shiftKey) {
                             const findNewY = (y: number): number => {
                                 const inMergedCell = merged_cells.find(mergedCellRange => (
@@ -144,7 +146,6 @@ const Spreadsheet = ({
                                     draggingStartCell.y <= mergedCellRange.end.y
                                 ))
                             ))
-                            console.log({newStartY, newEndY})
                             const newSelection = findSelection({
                                 selectedCells: {
                                     ...selectedCells,
@@ -187,7 +188,9 @@ const Spreadsheet = ({
                         }
                         break
                     case "ArrowDown":
-                        setEditingCell(null)
+                        if(editingCell) {
+                            break
+                        }
                         if (e.shiftKey) {
                             const findNewY = (y: number): number => {
                                 const inMergedCell = merged_cells.find(mergedCellRange => (
@@ -256,7 +259,9 @@ const Spreadsheet = ({
                         }
                         break
                     case "ArrowLeft":
-                        setEditingCell(null)
+                        if(editingCell) {
+                            break
+                        }
                         if (e.shiftKey) {
                             const findNewX = (x: number): number => {
                                 const inMergedCell = merged_cells.find(mergedCellRange => (
@@ -326,7 +331,9 @@ const Spreadsheet = ({
                         }
                         break
                     case "ArrowRight":
-                        setEditingCell(null)
+                        if(editingCell) {
+                            break
+                        }
                         if (e.shiftKey) {
                             const findNewX = (x: number): number => {
                                 const inMergedCell = merged_cells.find(mergedCellRange => (
@@ -417,7 +424,8 @@ const Spreadsheet = ({
         }
     }, [
         selectedCells,
-        draggingStartCell
+        draggingStartCell,
+        editingCell,
     ])
 
     // const canInsertRowAbove = !cells[selectedCells.start.y].some(cell => cell.from && cell.from.y < selectedCells.start.y)
