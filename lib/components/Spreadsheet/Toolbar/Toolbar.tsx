@@ -15,6 +15,7 @@ import InsertColumnBeforeButton from "./InsertColumnButton/InsertColumnBeforeBut
 import InsertColumnAfterButton from "./InsertColumnButton/InsertColumnAfterButton"
 import DeleteColumnButton from "./DeleteColumnButton/DeleteColumnButton"
 import FontSizeGroup from "./FontSizeGroup/FontSizeGroup"
+import RotateGroup from "./RotateGroup/RotateGroup"
 import InsertImageButton from "./InsertImageButton/InsertImageButton"
 import DeleteImageButton from "./DeleteImageButton/DeleteImageButton"
 import Button from "./Button/Button"
@@ -51,25 +52,28 @@ const Toolbar = ({
                                 onChange={onChange}
                                 selectedCells={selectedCells}
                             />
-
-                            <DropdownTextVerticalAlignButton
-                                spreadsheetData={spreadsheetData}
-                                onChange={onChange}
-                                selectedCells={selectedCells}
-                            />
                             <DropdownBackgroundColorButton
                                 spreadsheetData={spreadsheetData}
                                 onChange={onChange}
                                 selectedCells={selectedCells}
                             />
-
                             <DropdownBorderButton
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                            />
+                            <RotateGroup
                                 spreadsheetData={spreadsheetData}
                                 onChange={onChange}
                                 selectedCells={selectedCells}
                             />
                         </div>
                         <div className={Class.sectionTools}>
+                            <DropdownTextVerticalAlignButton
+                                spreadsheetData={spreadsheetData}
+                                onChange={onChange}
+                                selectedCells={selectedCells}
+                            />
                             <DropdownFontColorButton
                                 spreadsheetData={spreadsheetData}
                                 onChange={onChange}

@@ -271,38 +271,45 @@ const Cell = ({
         >
             {image?.path ? (
                 <img
-                src={image.path}
-                alt="cell-img"
-                style={{
-                    height: `${height-4}px`,
-                    width: `${width-4}px`,
-                    objectFit: "contain",
-                    pointerEvents: "none",
-                    userSelect: "none",
-                }}
+                    src={image.path}
+                    alt="cell-img"
+                    style={{
+                        height: `${height - 4}px`,
+                        width: `${width - 4}px`,
+                        objectFit: "contain",
+                        pointerEvents: "none",
+                        userSelect: "none",
+                    }}
                 />
             ) : (
                 isSameCoordinate(coordinate, editingCell) && !viewOnlyMode && (typeof value === "string")
             ) ? (
                 <input
-                ref={inputRef}
-                type="text"
-                value={value}
-                style={{
-                    height: `${height-4}px`,
-                    width: `${width-4}px`,
-                    fontSize: style?.font_size ? `${style.font_size}px` : "14px",
-                }}
-                onChange={(e) => cellValueChanged({
-                    value: e.target.value,
-                    spreadsheetData,
-                    onChange,
-                    coordinate,
-                })}
-                onBlur={()=>setEditingCell(null)}
+                    ref={inputRef}
+                    type="text"
+                    value={value}
+                    style={{
+                        height: `${height - 4}px`,
+                        width: `${width - 4}px`,
+                        fontSize: style?.font_size ? `${style.font_size}px` : "14px",
+                    }}
+                    onChange={(e) => cellValueChanged({
+                        value: e.target.value,
+                        spreadsheetData,
+                        onChange,
+                        coordinate,
+                    })}
+                    onBlur={() => setEditingCell(null)}
                 />
             ) : (
-                value
+                <div
+                    className={Class.value}
+                    style={cell.style?.rotate && {
+                        rotate: `${cell.style?.rotate}deg`
+                    } || undefined}
+                >
+                    {value}
+                </div>
             )}
             {(cell.hover_value && isHover) && (
                 <div

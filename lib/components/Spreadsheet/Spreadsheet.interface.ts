@@ -33,6 +33,7 @@ export interface Style {
     background_color?: Color,
     font_color?: Color,
     border?: Border,
+    rotate?: number,
 }
 
 export interface Image {

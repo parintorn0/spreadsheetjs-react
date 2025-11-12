@@ -55,11 +55,14 @@ export interface SetBorderProps extends SetStyleProps {
 export interface MergeCellsProps extends SetStyleProps {
     spreadsheetData: SpreadsheetData,
     setDraggingStartCell: React.Dispatch<React.SetStateAction<Coordinate>>,
-    
+
 }
 
 export interface FontIncrementProps extends SetStyleProps {}
 export interface FontDecrementProps extends SetStyleProps {}
+
+export interface RotateClockwiseProps extends SetStyleProps {}
+export interface RotateAntiClockwiseProps extends SetStyleProps {}
 
 interface ManageImageProps {
     spreadsheetData: SpreadsheetData,
