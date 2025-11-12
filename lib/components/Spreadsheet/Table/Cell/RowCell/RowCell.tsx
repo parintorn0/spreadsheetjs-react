@@ -75,6 +75,7 @@ const RowCell = ({
                 rowStartDragging({
                     rowIndex,
                     cells: spreadsheetData.cells,
+                    mergedCells: spreadsheetData.merged_cells,
                     setIsDragging,
                     setDraggingStartCell,
                     setSelectedCells,
@@ -129,6 +130,7 @@ const RowCell = ({
             rowDragging({
                 rowIndex,
                 cells: spreadsheetData.cells,
+                mergedCells: spreadsheetData.merged_cells,
                 isDragging,
                 setSelectedCells,
                 draggingStartCell,

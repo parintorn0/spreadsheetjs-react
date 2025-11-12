@@ -1,4 +1,4 @@
-import type { CellData, Coordinate, SelectedCells } from "./Spreadsheet.interface"
+import type { Coordinate, SelectedCells, CellRange } from "./Spreadsheet.interface"
 
 export const isSameCoordinate = (firstCoordinate: Coordinate| null, secondCoordinate: Coordinate | null): boolean => {
     if(firstCoordinate===null || secondCoordinate===null) {
@@ -29,170 +29,106 @@ export const checkIsInsideSelectedCells = ({
 
 const findSelectionMinX = ({
     selectedCells,
-    cells,
+    mergedCells,
 }: {
     selectedCells: SelectedCells,
-    cells: Array<Array<CellData>>,
-}): number => {
-    const newStartX = cells.reduce((
-        min, r, ri
-    ) => (
-        selectedCells.start.y <= ri && ri <= selectedCells.end.y
-    ) ? (
-        Math.min(min, ...r.map((c, ci) => (
-            selectedCells.start.x <= ci && ci <= selectedCells.end.x
-        ) ? (
-            c.from ? c.from.x : selectedCells.start.x
-        ): selectedCells.start.x))
-    ) : min, selectedCells.start.x)
-    if(selectedCells.start.x === newStartX){
-        return selectedCells.start.x
-    }
-    return findSelectionMinX({
-        selectedCells: {
-            start: {
-                x: newStartX,
-                y: selectedCells.start.y,
-            },
-            end: {
-                x: selectedCells.end.x,
-                y: selectedCells.end.y,
-            },
-        },
-        cells,
-    })
-}
+    mergedCells: Array<CellRange>,
+}): number => (
+    Math.min(
+        selectedCells.start.x,
+        ...mergedCells.filter(mergeCellRange => Array.from<number>({
+            length: selectedCells.end.y - selectedCells.start.y + 1
+        }).some((_, index) => (
+            mergeCellRange.start.x <= selectedCells.start.x &&
+            selectedCells.start.x <= mergeCellRange.end.x &&
+            mergeCellRange.start.y <= index + selectedCells.start.y &&
+            index + selectedCells.start.y <= mergeCellRange.end.y
+        ))).map(({start}) => start.x)
+    )
+)
 
 const findSelectionMinY = ({
     selectedCells,
-    cells,
+    mergedCells,
 }: {
     selectedCells: SelectedCells,
-    cells: Array<Array<CellData>>,
-}): number => {
-    const newStartY = cells.reduce((
-        min, r, ri
-    ) => (
-        selectedCells.start.y <= ri && ri <= selectedCells.end.y
-    ) ? (
-        Math.min(min, ...r.map((c, ci) => (
-            selectedCells.start.x <= ci && ci <= selectedCells.end.x
-        ) ? (
-            c.from ? c.from.y : selectedCells.start.y
-        ): selectedCells.start.y))
-    ) : min, selectedCells.start.y)
-    if(selectedCells.start.y === newStartY){
-        return selectedCells.start.y
-    }
-    return findSelectionMinY({
-        selectedCells: {
-            start: {
-                x: selectedCells.start.x,
-                y: newStartY,
-            },
-            end: {
-                x: selectedCells.end.x,
-                y: selectedCells.end.y,
-            },
-        },
-        cells,
-    })
-}
+    mergedCells: Array<CellRange>,
+}): number => (
+    Math.min(
+        selectedCells.start.y,
+        ...mergedCells.filter(mergeCellRange => Array.from<number>({
+            length: selectedCells.end.x - selectedCells.start.x + 1
+        }).some((_, index) => (
+            mergeCellRange.start.x <= index + selectedCells.start.x &&
+            index + selectedCells.start.x <= mergeCellRange.end.x &&
+            mergeCellRange.start.y <= selectedCells.start.y &&
+            selectedCells.start.y <= mergeCellRange.end.y
+        ))).map(({start}) => start.y)
+    )
+)
 
 const findSelectionMaxX = ({
     selectedCells,
-    cells,
+    mergedCells,
 }: {
     selectedCells: SelectedCells,
-    cells: Array<Array<CellData>>,
+    mergedCells: Array<CellRange>,
 }): number => {
-    const newEndX = cells.reduce((
-        max, r, ri
-    ) => (
-        selectedCells.start.y <= ri && ri <= selectedCells.end.y
-    ) ? (
-        Math.max(max, ...r.map((c, ci) => (
-            selectedCells.start.x <= ci && ci <= selectedCells.end.x
-        ) ? (
-            ci + (c.expand_x || 1) - 1
-        ): selectedCells.end.x))
-    ) : max, selectedCells.end.x)
-    if(selectedCells.end.x === newEndX){
-        return selectedCells.end.x
-    }
-    return findSelectionMaxX({
-        selectedCells: {
-            start: {
-                x: selectedCells.start.x,
-                y: selectedCells.start.y,
-            },
-            end: {
-                x: newEndX,
-                y: selectedCells.end.y,
-            },
-        },
-        cells,
-    })
+    return Math.max(
+        selectedCells.end.x,
+        ...mergedCells.filter(mergeCellRange => Array.from<number>({
+            length: selectedCells.end.y - selectedCells.start.y + 1
+        }).some((_, index) => (
+            mergeCellRange.start.x <= selectedCells.end.x &&
+            selectedCells.end.x <= mergeCellRange.end.x &&
+            mergeCellRange.start.y <= index + selectedCells.start.y &&
+            index + selectedCells.start.y <= mergeCellRange.end.y
+        ))).map(({end}) => end.x)
+    )
 }
 
 const findSelectionMaxY = ({
     selectedCells,
-    cells,
+    mergedCells,
 }: {
     selectedCells: SelectedCells,
-    cells: Array<Array<CellData>>,
-}): number => {
-    const newEndY = cells.reduce((
-        max, r, ri
-    ) => (
-        selectedCells.start.y <= ri && ri <= selectedCells.end.y
-    ) ? (
-        Math.max(max, ...r.map((c, ci) => (
-            selectedCells.start.x <= ci && ci <= selectedCells.end.x
-        ) ? (
-            ri + (c.expand_y || 1) - 1
-        ): selectedCells.end.y))
-    ) : max, selectedCells.end.y)
-    if(selectedCells.end.y === newEndY){
-        return selectedCells.end.y
-    }
-    return findSelectionMaxY({
-        selectedCells: {
-            start: {
-                x: selectedCells.start.x,
-                y: selectedCells.start.y,
-            },
-            end: {
-                x: selectedCells.end.x,
-                y: newEndY,
-            },
-        },
-        cells,
-    })
-}
+    mergedCells: Array<CellRange>,
+}): number => (
+    Math.max(
+        selectedCells.end.y,
+        ...mergedCells.filter(mergeCellRange => Array.from<number>({
+            length: selectedCells.end.x - selectedCells.start.x + 1
+        }).some((_, index) => (
+            mergeCellRange.start.x <= index + selectedCells.start.x &&
+            index + selectedCells.start.x <= mergeCellRange.end.x &&
+            mergeCellRange.start.y <= selectedCells.end.y &&
+            selectedCells.end.y <= mergeCellRange.end.y
+        ))).map(({end}) => end.y)
+    )
+)
 
 export const findSelection = ({
     selectedCells,
-    cells,
+    mergedCells,
 }: {
     selectedCells: SelectedCells,
-    cells: Array<Array<CellData>>,
+    mergedCells: Array<CellRange>,
 }): SelectedCells => {
     const newStartX = findSelectionMinX({
         selectedCells,
-        cells,
+        mergedCells,
     })
     const newStartY = findSelectionMinY({
         selectedCells,
-        cells,
+        mergedCells,
     })
     const newEndX = findSelectionMaxX({
         selectedCells,
-        cells,
+        mergedCells,
     })
     const newEndY = findSelectionMaxY({
         selectedCells,
-        cells,
+        mergedCells,
     })
     if (
         newStartX === selectedCells.start.x &&
@@ -223,7 +159,7 @@ export const findSelection = ({
                     y: newEndY,
                 },
             },
-            cells,
+            mergedCells,
         })
     }
 }

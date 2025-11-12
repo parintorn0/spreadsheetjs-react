@@ -124,12 +124,14 @@ const Table = ({
                                     })) ? Class.selected : ""}
                             onMouseDown={() => allStartDragging({
                                 cells: spreadsheetData.cells,
+                                mergedCells: spreadsheetData.merged_cells,
                                 setIsDragging,
                                 setDraggingStartCell,
                                 setSelectedCells,
                             })}
                             onMouseOver={() => allDragging({
                                 cells: spreadsheetData.cells,
+                                mergedCells: spreadsheetData.merged_cells,
                                 isDragging,
                                 setSelectedCells,
                             })}

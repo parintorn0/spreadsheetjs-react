@@ -4,6 +4,7 @@ import type { RowDraggingProps, RowStartDraggingProps } from "./RowCell.event.in
 export const rowStartDragging = ({
     rowIndex,
     cells,
+    mergedCells,
     setIsDragging,
     setDraggingStartCell,
     setSelectedCells,
@@ -20,6 +21,7 @@ export const rowStartDragging = ({
             },
         },
         cells,
+        mergedCells,
         setIsDragging,
         setDraggingStartCell,
         setSelectedCells,
@@ -29,6 +31,7 @@ export const rowStartDragging = ({
 export const rowDragging = ({
     rowIndex,
     cells,
+    mergedCells,
     isDragging,
     setSelectedCells,
     draggingStartCell,
@@ -45,6 +48,7 @@ export const rowDragging = ({
             },
         },
         cells,
+        mergedCells,
         isDragging,
         setSelectedCells,
     })

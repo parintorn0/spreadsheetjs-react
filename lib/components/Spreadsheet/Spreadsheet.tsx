@@ -6,8 +6,6 @@ import Toolbar from "./Toolbar/Toolbar"
 import Table from "./Table/Table"
 import { findSelection } from "./Spreadsheet.util"
 
-// import ColorPicker from "./Toolbar/Components/ColorPicker/ColorPicker"
-
 const defaultSpreadsheetData = {
     cells: [[{
         value: "A1",
@@ -44,12 +42,14 @@ const defaultSpreadsheetData = {
     }]],
     rows_height: [50, 50, 50, 50],
     cols_width: [100, 100, 100, 100],
+    merged_cells: [],
 }
 
 const Spreadsheet = ({
     cells,
     rows_height,
     cols_width,
+    merged_cells,
     viewOnlyMode = false,
     onChange,
     overrideResizeColumnPrompt,
@@ -103,7 +103,7 @@ const Spreadsheet = ({
                 y: 0,
             }
         },
-        cells,
+        mergedCells: merged_cells,
     }))
     const [editingCell, setEditingCell] = useState<Coordinate | null>(null)
 
@@ -117,157 +117,294 @@ const Spreadsheet = ({
                     case "ArrowUp":
                         setEditingCell(null)
                         if (e.shiftKey) {
-                            setSelectedCells(prev => ({
-                                ...prev,
-                                ...((
-                                    draggingStartCell.y === prev.end.y
-                                ) ? {
-                                    start: {
-                                        ...prev.start,
-                                        y: Math.max(prev.start.y - 1, 0)
-                                    }
-                                } : {
-                                    end: {
-                                        ...prev.end,
-                                        y: Math.max(prev.end.y - 1, 0)
-                                    }
-                                })
-                            }))
+                            const findNewY = (y: number): number => {
+                                const inMergedCell = merged_cells.find(mergedCellRange => (
+                                    Array.from<number>({length: selectedCells.end.x - selectedCells.start.x + 1}).some((_, index) => (
+                                        mergedCellRange.start.x <= index + selectedCells.start.x &&
+                                        index + selectedCells.start.x <= mergedCellRange.end.x &&
+                                        mergedCellRange.start.y <= y - 1 &&
+                                        y - 1 < mergedCellRange.end.y
+                                    ))
+                                ))
+                                if(inMergedCell) {
+                                    return findNewY(inMergedCell.start.y)
+                                }
+                                else {
+                                    return Math.max(y - 1, 0)
+                                }
+                            }
+                            const newStartY = findNewY(selectedCells.start.y)
+                            const newEndY = findNewY(selectedCells.end.y)
+                            // Cell range from draggingStartCell as ref
+                            const selectedDragginStartCellsMergeCells = merged_cells.filter(mergedCellRange => (
+                                Array.from<number>({length: selectedCells.end.x - selectedCells.start.x + 1}).some((_, index) => (
+                                    mergedCellRange.start.x <= index + selectedCells.start.x &&
+                                    index + selectedCells.start.x <= mergedCellRange.end.x &&
+                                    mergedCellRange.start.y <= draggingStartCell.y &&
+                                    draggingStartCell.y <= mergedCellRange.end.y
+                                ))
+                            ))
+                            console.log({newStartY, newEndY})
+                            const newSelection = findSelection({
+                                selectedCells: {
+                                    ...selectedCells,
+                                    ...((
+                                        selectedCells.end.y <= Math.min(...selectedDragginStartCellsMergeCells.map(mergedCellRange => mergedCellRange.start.y), draggingStartCell.y) ||
+                                        selectedCells.end.y <= Math.max(...selectedDragginStartCellsMergeCells.map(mergedCellRange => mergedCellRange.end.y), draggingStartCell.y)
+                                    ) ? {
+                                        start: {
+                                            ...selectedCells.start,
+                                            y: newStartY,
+                                        }
+                                    } : {
+                                        end: {
+                                            ...selectedCells.end,
+                                            y: newEndY,
+                                        }
+                                    })
+                                },
+                                mergedCells: merged_cells,
+                            })
+                            setSelectedCells(newSelection)
                         }
                         else {
-                            setDraggingStartCell({
-                                x: selectedCells.start.x,
-                                y: Math.max(selectedCells.start.y - 1, 0),
-                            })
-                            setSelectedCells(prev => ({
-                                start: {
-                                    x: selectedCells.start.x,
-                                    y: Math.max(prev.start.y - 1, 0),
-                                },
-                                end: {
-                                    x: selectedCells.start.x,
-                                    y: Math.max(prev.start.y - 1, 0),
-                                }
-                            }))
+                            const newSelection = findSelection({
+                                    selectedCells: {
+                                        ...selectedCells,
+                                        start: {
+                                            x: selectedCells.start.x,
+                                            y: Math.max(selectedCells.start.y - 1, 0),
+                                        },
+                                        end: {
+                                            x: selectedCells.start.x,
+                                            y: Math.max(selectedCells.start.y - 1, 0),
+                                        }
+                                    },
+                                    mergedCells: merged_cells,
+                                })
+                            setDraggingStartCell(newSelection.start)
+                            setSelectedCells(newSelection)
                         }
                         break
                     case "ArrowDown":
                         setEditingCell(null)
                         if (e.shiftKey) {
-                            setSelectedCells(prev => ({
-                                ...prev,
-                                ...((
-                                    draggingStartCell.y === prev.start.y
-                                ) ? {
-                                    end: {
-                                        ...prev.end,
-                                        y: Math.min(prev.end.y + 1, cells.length - 1)
-                                    }
-                                } : {
-                                    start: {
-                                        ...prev.start,
-                                        y: Math.min(prev.start.y + 1, cells.length - 1)
-                                    }
-                                })
-                            }))
+                            const findNewY = (y: number): number => {
+                                const inMergedCell = merged_cells.find(mergedCellRange => (
+                                    Array.from<number>({length: selectedCells.end.x - selectedCells.start.x + 1}).some((_, index) => (
+                                        mergedCellRange.start.x <= index + selectedCells.start.x &&
+                                        index + selectedCells.start.x <= mergedCellRange.end.x &&
+                                        mergedCellRange.start.y < y + 1 &&
+                                        y + 1 <= mergedCellRange.end.y
+                                    ))
+                                ))
+                                if(inMergedCell) {
+                                    return findNewY(inMergedCell.end.y)
+                                }
+                                else {
+                                    return Math.min(y + 1, cells.length - 1)
+                                }
+                            }
+                            const newStartY = findNewY(selectedCells.start.y)
+                            const newEndY = findNewY(selectedCells.end.y)
+                            const selectedDragginStartCellsMergeCells = merged_cells.filter(mergedCellRange => (
+                                Array.from<number>({length: selectedCells.end.x - selectedCells.start.x + 1}).some((_, index) => (
+                                    mergedCellRange.start.x <= index + selectedCells.start.x &&
+                                    index + selectedCells.start.x <= mergedCellRange.end.x &&
+                                    mergedCellRange.start.y <= draggingStartCell.y &&
+                                    draggingStartCell.y <= mergedCellRange.end.y
+                                ))
+                            ))
+                            const newSelection = findSelection({
+                                selectedCells: {
+                                    ...selectedCells,
+                                    ...((
+                                        selectedCells.start.y >= Math.min(...selectedDragginStartCellsMergeCells.map(mergedCellRange => mergedCellRange.start.y), draggingStartCell.y) ||
+                                        selectedCells.start.y >= Math.max(...selectedDragginStartCellsMergeCells.map(mergedCellRange => mergedCellRange.start.y), draggingStartCell.y)
+                                    ) ? {
+                                        end: {
+                                            ...selectedCells.end,
+                                            y: newEndY,
+                                        }
+                                    } : {
+                                        start: {
+                                            ...selectedCells.start,
+                                            y: newStartY,
+                                        }
+                                    })
+                                },
+                                mergedCells: merged_cells,
+                            })
+                            setSelectedCells(newSelection)
                         }
                         else {
-                            setDraggingStartCell({
-                                x: selectedCells.start.x,
-                                y: Math.min(selectedCells.start.y + 1, cells.length - 1),
-                            })
-                            setSelectedCells(prev => ({
-                                start: {
-                                    x: selectedCells.start.x,
-                                    y: Math.min(prev.start.y + 1, cells.length - 1),
+                            const newSelection = findSelection({
+                                selectedCells: {
+                                    start: {
+                                        x: selectedCells.start.x,
+                                        y: Math.min(selectedCells.end.y + 1, cells.length - 1),
+                                    },
+                                    end: {
+                                        x: selectedCells.start.x,
+                                        y: Math.min(selectedCells.end.y + 1, cells.length - 1),
+                                    }
                                 },
-                                end: {
-                                    x: selectedCells.start.x,
-                                    y: Math.min(prev.start.y + 1, cells.length - 1),
-                                }
-                            }))
+                                mergedCells: merged_cells,
+                            })
+                            setDraggingStartCell(newSelection.start)
+                            setSelectedCells(newSelection)
                         }
                         break
                     case "ArrowLeft":
                         setEditingCell(null)
                         if (e.shiftKey) {
-                            setSelectedCells(prev => ({
-                                ...prev,
-                                ...((
-                                    draggingStartCell.x === prev.end.x
-                                ) ? {
-                                    start: {
-                                        ...prev.start,
-                                        x: Math.max(prev.start.x - 1, 0)
-                                    }
-                                } : {
-                                    end: {
-                                        ...prev.end,
-                                        x: Math.max(prev.end.x - 1, 0)
-                                    }
-                                })
-                            }))
+                            const findNewX = (x: number): number => {
+                                const inMergedCell = merged_cells.find(mergedCellRange => (
+                                    Array.from<number>({length: selectedCells.end.y - selectedCells.start.y + 1}).some((_, index) => (
+                                        mergedCellRange.start.x <= x - 1 &&
+                                        x - 1 < mergedCellRange.end.x &&
+                                        mergedCellRange.start.y <= index + selectedCells.start.y &&
+                                        index + selectedCells.start.y <= mergedCellRange.end.y
+                                    ))
+                                ))
+                                if(inMergedCell) {
+                                    return findNewX(inMergedCell.start.x)
+                                }
+                                else {
+                                    return Math.max(x - 1, 0)
+                                }
+                            }
+                            const newStartX = findNewX(selectedCells.start.x)
+                            const newEndX = findNewX(selectedCells.end.x)
+                            // Cell range from draggingStartCell as ref
+                            const selectedDragginStartCellsMergeCells = merged_cells.filter(mergedCellRange => (
+                                Array.from<number>({length: selectedCells.end.y - selectedCells.start.y + 1}).some((_, index) => (
+                                    mergedCellRange.start.x <= draggingStartCell.x &&
+                                    draggingStartCell.x <= mergedCellRange.end.x &&
+                                    mergedCellRange.start.y <= index + selectedCells.start.y &&
+                                    index + selectedCells.start.y <= mergedCellRange.end.y
+                                ))
+                            ))
+                            const newSelection = findSelection({
+                                selectedCells: {
+                                    ...selectedCells,
+                                    ...((
+                                        selectedCells.end.x <= Math.min(...selectedDragginStartCellsMergeCells.map(mergedCellRange => mergedCellRange.start.x), draggingStartCell.x) ||
+                                        selectedCells.end.x <= Math.max(...selectedDragginStartCellsMergeCells.map(mergedCellRange => mergedCellRange.end.x), draggingStartCell.x)
+                                    ) ? {
+                                        start: {
+                                            ...selectedCells.start,
+                                            x: newStartX,
+                                        }
+                                    } : {
+                                        end: {
+                                            ...selectedCells.end,
+                                            x: newEndX,
+                                        }
+                                    })
+                                },
+                                mergedCells: merged_cells,
+                            })
+                            setSelectedCells(newSelection)
                         }
                         else {
-                            setDraggingStartCell({
-                                x: Math.max(selectedCells.start.x - 1, 0),
-                                y: selectedCells.start.y,
-                            })
-                            setSelectedCells(prev => ({
-                                start: {
-                                    x: Math.max(prev.start.x - 1, 0),
-                                    y: selectedCells.start.y,
+                            const newSelection = findSelection({
+                                selectedCells: {
+                                    start: {
+                                        x: Math.max(selectedCells.start.x - 1, 0),
+                                        y: selectedCells.start.y,
+                                    },
+                                    end: {
+                                        x: Math.max(selectedCells.start.x - 1, 0),
+                                        y: selectedCells.start.y,
+                                    }
                                 },
-                                end: {
-                                    x: Math.max(prev.start.x - 1, 0),
-                                    y: selectedCells.start.y,
-                                }
-                            }))
+                                mergedCells: merged_cells,
+                            })
+                            setDraggingStartCell(newSelection.start)
+                            setSelectedCells(newSelection)
                         }
                         break
                     case "ArrowRight":
                         setEditingCell(null)
                         if (e.shiftKey) {
-                            setSelectedCells(prev => ({
-                                ...prev,
-                                ...((
-                                    draggingStartCell.x === prev.start.x
-                                ) ? {
-                                    end: {
-                                        ...prev.end,
-                                        x: Math.min(prev.end.x + 1, cells[0].length - 1)
-                                    }
-                                } : {
-                                    start: {
-                                        ...prev.start,
-                                        x: Math.min(prev.start.x + 1, cells[0].length - 1)
-                                    }
-                                })
-                            }))
+                            const findNewX = (x: number): number => {
+                                const inMergedCell = merged_cells.find(mergedCellRange => (
+                                    Array.from<number>({length: selectedCells.end.y - selectedCells.start.y + 1}).some((_, index) => (
+                                        mergedCellRange.start.y <= index + selectedCells.start.y &&
+                                        index + selectedCells.start.y <= mergedCellRange.end.y &&
+                                        mergedCellRange.start.x < x + 1 &&
+                                        x + 1 <= mergedCellRange.end.x
+                                    ))
+                                ))
+                                if(inMergedCell) {
+                                    return findNewX(inMergedCell.end.x)
+                                }
+                                else {
+                                    return Math.min(x + 1, cells[0].length - 1)
+                                }
+                            }
+                            const newStartX = findNewX(selectedCells.start.x)
+                            const newEndX = findNewX(selectedCells.end.x)
+                            const selectedDragginStartCellsMergeCells = merged_cells.filter(mergedCellRange => (
+                                Array.from<number>({length: selectedCells.end.y - selectedCells.start.y + 1}).some((_, index) => (
+                                    mergedCellRange.start.y <= index + selectedCells.start.y &&
+                                    index + selectedCells.start.y <= mergedCellRange.end.y &&
+                                    mergedCellRange.start.x <= draggingStartCell.x &&
+                                    draggingStartCell.x <= mergedCellRange.end.x
+                                ))
+                            ))
+                            const newSelection = findSelection({
+                                selectedCells: {
+                                    ...selectedCells,
+                                    ...((
+                                        selectedCells.start.x >= Math.min(...selectedDragginStartCellsMergeCells.map(mergedCellRange => mergedCellRange.start.x), draggingStartCell.x) ||
+                                        selectedCells.start.x >= Math.max(...selectedDragginStartCellsMergeCells.map(mergedCellRange => mergedCellRange.start.x), draggingStartCell.x)
+                                    ) ? {
+                                        end: {
+                                            ...selectedCells.end,
+                                            x: newEndX,
+                                        }
+                                    } : {
+                                        start: {
+                                            ...selectedCells.start,
+                                            x: newStartX,
+                                        }
+                                    })
+                                },
+                                mergedCells: merged_cells,
+                            })
+                            setSelectedCells(newSelection)
                         }
                         else {
-                            setDraggingStartCell({
-                                x: Math.min(selectedCells.start.x + 1, cells[0].length - 1),
-                                y: selectedCells.start.y,
-                            })
-                            setSelectedCells(prev => ({
-                                start: {
-                                    x: Math.min(prev.start.x + 1, cells[0].length - 1),
-                                    y: selectedCells.start.y,
+                            const newSelection = findSelection({
+                                selectedCells: {
+                                    start: {
+                                        x: Math.min(selectedCells.end.x + 1, cells[0].length - 1),
+                                        y: selectedCells.start.y,
+                                    },
+                                    end: {
+                                        x: Math.min(selectedCells.end.x + 1, cells[0].length - 1),
+                                        y: selectedCells.start.y,
+                                    }
                                 },
-                                end: {
-                                    x: Math.min(prev.start.x + 1, cells[0].length - 1),
-                                    y: selectedCells.start.y,
-                                }
-                            }))
+                                mergedCells: merged_cells,
+                            })
+                            setDraggingStartCell(newSelection.start)
+                            setSelectedCells(newSelection)
                         }
                         break
                     case "F2":
                         setEditingCell(draggingStartCell)
-                        setSelectedCells({
-                            start: draggingStartCell,
-                            end: draggingStartCell,
-                        })
+                        setSelectedCells(
+                            findSelection({
+                                selectedCells: {
+                                    start: draggingStartCell,
+                                    end: draggingStartCell,
+                                },
+                                mergedCells: merged_cells,
+                            })
+                        )
                         break
                     default:
                         break
@@ -283,54 +420,63 @@ const Spreadsheet = ({
         draggingStartCell
     ])
 
-    const canInsertRowAbove = !cells[selectedCells.start.y].some(cell => cell.from && cell.from.y < selectedCells.start.y)
-    const canInsertRowBelow = !cells[selectedCells.end.y].some(cell => cell.expand_y || (
-        cell.from && (selectedCells.end.y + 1 < (cells[cell.from.y][cell.from.x].expand_y || 1) + cell.from.y)
-    ))
-    const canInsertColumnBefore = !cells.some(row => {
-        const cell = row[selectedCells.start.x]
-        return cell.from && cell.from.x < selectedCells.start.x
-    })
-
-    const canInsertColumnAfter = !cells.some(row => {
-        const cell = row[selectedCells.end.x]
-        return cell.from && (selectedCells.end.x + 1 < (cells[cell.from.y][cell.from.x].expand_x || 1) + cell.from.x)
-    })
-    // const canDeleteRow = selectedCells.end.y - selectedCells.start.y + 1 < rows_height.length
-    // const canDeleteColumn = selectedCells.end.x - selectedCells.start.x + 1 < cols_width.length
-    // const canDeleteRow = !cells.some((row, rowIndex) => {
-    //     return row.some(cell => {
-    //         return selectedCells.start.y <= rowIndex &&
-    //             rowIndex <= selectedCells.end.y && (
-    //                 cell.from && (
-    //                     cell.from.y > selectedCells.start.y
-    //                 ) || (
-    //                     (cell.expand_y || 1) + rowIndex - 1 > selectedCells.end.y
-    //                 )
-    //             )
-    //     })
-    // })
-    const canDeleteRow = !cells.some((row, rowIndex) => row.some(cell => (
+    // const canInsertRowAbove = !cells[selectedCells.start.y].some(cell => cell.from && cell.from.y < selectedCells.start.y)
+    const canInsertRowAbove = cells[selectedCells.start.y].every((_, cellIndex) => !merged_cells.some(mergedCellRange => (
+        mergedCellRange.start.x <= cellIndex &&
+        cellIndex <= mergedCellRange.end.x &&
+        mergedCellRange.start.y <= selectedCells.start.y &&
+        selectedCells.start.y <= mergedCellRange.end.y &&
+        mergedCellRange.start.x !== cellIndex &&
+        mergedCellRange.start.y !== selectedCells.start.y
+    )))
+    const canInsertRowBelow = cells[selectedCells.end.y].every((_, cellIndex) => !merged_cells.some(mergedCellRange => (
+        mergedCellRange.start.x <= cellIndex &&
+        cellIndex <= mergedCellRange.end.x &&
+        mergedCellRange.start.y <= selectedCells.end.y &&
+        selectedCells.end.y <= mergedCellRange.end.y &&
+        mergedCellRange.end.x !== cellIndex &&
+        mergedCellRange.end.y !== selectedCells.end.y
+    )))
+    const canInsertColumnBefore = cells.every((_, rowIndex) => !merged_cells.some(mergedCellRange => (
+        mergedCellRange.start.x <= selectedCells.start.x &&
+        selectedCells.start.x <= mergedCellRange.end.x &&
+        mergedCellRange.start.y <= rowIndex &&
+        rowIndex <= mergedCellRange.end.y &&
+        mergedCellRange.start.x !== selectedCells.start.x &&
+        mergedCellRange.start.y !== rowIndex
+    )))
+    const canInsertColumnAfter = cells.every((_, rowIndex) => !merged_cells.some(mergedCellRange => (
+        mergedCellRange.start.x <= selectedCells.end.x &&
+        selectedCells.end.x <= mergedCellRange.end.x &&
+        mergedCellRange.start.y <= rowIndex &&
+        rowIndex <= mergedCellRange.end.y &&
+        mergedCellRange.end.x !== selectedCells.end.x &&
+        mergedCellRange.end.y !== rowIndex
+    )))
+    const canDeleteRow = !cells.some((row, rowIndex) => (
         selectedCells.start.y <= rowIndex &&
-        rowIndex <= selectedCells.end.y && (
-            cell.from && (
-                cell.from.y < selectedCells.start.y
-            ) || (
-                (cell.expand_y || 1) + rowIndex - 1 > selectedCells.end.y
-            )
+        rowIndex <= selectedCells.end.y &&
+        merged_cells.some(mergedCellRange => (
+            row.some((_, cellIndex) => (
+                mergedCellRange.start.x <= cellIndex &&
+                cellIndex <= mergedCellRange.end.x &&
+                mergedCellRange.start.y <= rowIndex &&
+                rowIndex <= mergedCellRange.end.y
+            ))
         )
     )))
-    const canDeleteColumn = !cells.some(row => row.some((cell, cellIndex) => (
-        selectedCells.start.x <= cellIndex &&
-        cellIndex <= selectedCells.end.x && (
-            cell.from && (
-                cell.from.x < selectedCells.start.x
-            ) || (
-                (cell.expand_x || 1) + cellIndex - 1 > selectedCells.end.x
-            )
-        )
-    )))
-
+    const canDeleteColumn = !cells.some((row, rowIndex) => (
+        row.some((_, cellIndex) => (
+            selectedCells.start.x <= cellIndex &&
+            cellIndex <= selectedCells.end.x &&
+            merged_cells.some(mergedCellRange => (
+                mergedCellRange.start.x <= cellIndex &&
+                cellIndex <= mergedCellRange.end.x &&
+                mergedCellRange.start.y <= rowIndex &&
+                rowIndex <= mergedCellRange.end.y
+            ))
+        ))
+    ))
     return (
         <div
         className={`${
@@ -347,6 +493,7 @@ const Spreadsheet = ({
                             cells,
                             rows_height,
                             cols_width,
+                            merged_cells,
                         }}
                         onChange={onChange}
                         selectedCells={selectedCells}
@@ -369,6 +516,7 @@ const Spreadsheet = ({
                         cells,
                         rows_height,
                         cols_width,
+                        merged_cells,
                     }}
                     viewOnlyMode={viewOnlyMode}
                     onChange={onChange}

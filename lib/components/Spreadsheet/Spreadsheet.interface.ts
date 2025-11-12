@@ -52,10 +52,16 @@ export interface CellData {
     style?: Style,
 }
 
+export interface CellRange {
+    start: Coordinate,
+    end: Coordinate,
+}
+
 export interface SpreadsheetData {
     cells: Array<Array<CellData>>,
     cols_width: Array<number>,
     rows_height: Array<number>,
+    merged_cells: Array<CellRange>
 }
 
 export interface AppendCellMenu {
@@ -98,7 +104,4 @@ export interface SpreadsheetProps extends SpreadsheetData {
     disableDefaultColumnCellMenu?: boolean,
 }
 
-export interface SelectedCells {
-    start: Coordinate,
-    end: Coordinate,
-}
+export interface SelectedCells extends CellRange {}

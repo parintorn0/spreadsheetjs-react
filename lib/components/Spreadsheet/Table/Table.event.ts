@@ -4,14 +4,14 @@ import type { AllDraggingProps, AllStartDraggingProps, DraggingProps, ResizeColu
 
 export const startDragging = ({
     selectedCells,
-    cells,
+    mergedCells,
     setIsDragging,
     setDraggingStartCell,
     setSelectedCells,
 }: StartDraggingProps) => {
     const selection = findSelection({
         selectedCells,
-        cells,
+        mergedCells,
     })
     setIsDragging(true)
     setDraggingStartCell(selection.start)
@@ -20,6 +20,7 @@ export const startDragging = ({
 
 export const allStartDragging = ({
     cells,
+    mergedCells,
     setIsDragging,
     setDraggingStartCell,
     setSelectedCells,
@@ -36,6 +37,7 @@ export const allStartDragging = ({
             },
         },
         cells,
+        mergedCells,
         setIsDragging,
         setDraggingStartCell,
         setSelectedCells,
@@ -46,20 +48,21 @@ export const allStartDragging = ({
 
 export const dragging = ({
     selectedCells,
-    cells,
+    mergedCells,
     isDragging,
     setSelectedCells,
 }: DraggingProps) => {
     if (isDragging) {
         setSelectedCells(findSelection({
             selectedCells,
-            cells,
+            mergedCells,
         }))
     }
 }
 
 export const allDragging = ({
     cells,
+    mergedCells,
     isDragging,
     setSelectedCells,
 }: AllDraggingProps) => {
@@ -75,6 +78,7 @@ export const allDragging = ({
             },
         },
         cells,
+        mergedCells,
         isDragging,
         setSelectedCells,
     })

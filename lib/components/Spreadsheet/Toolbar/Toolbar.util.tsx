@@ -332,102 +332,63 @@ export const mergeCells = ({
     selectedCells,
     setDraggingStartCell,
 }: MergeCellsProps) => {
-    const hadMergeCell = spreadsheetData.cells.some((row, rowIndex) => (
-        row.some((col, colIndex) => (
-            (
-                Object.hasOwn(col, "expand_x") ||
-                Object.hasOwn(col, "expand_y") ||
-                Object.hasOwn(col, "from")
-            ) && (
-                checkIsInsideSelectedCells({
-                    coordinate: {
-                        x: colIndex,
-                        y: rowIndex,
-                    },
-                    selectedCells,
-                })
-            )
-        ))
-    ))
-    if(hadMergeCell) {
+    const { cells, merged_cells } = spreadsheetData
+    const inMergedCells = merged_cells.reduce<Array<number>>((arr, mergedCellRange, index) => {
+        const normalizedMergedCells = {
+            start: {
+                x: Math.min(mergedCellRange.start.x, mergedCellRange.end.x),
+                y: Math.min(mergedCellRange.start.y, mergedCellRange.end.y)
+            },
+            end: {
+                x: Math.max(mergedCellRange.start.x, mergedCellRange.end.x),
+                y: Math.max(mergedCellRange.start.y, mergedCellRange.end.y)
+            }
+        }
+        const normalizedSelectedCells = {
+            start: {
+                x: Math.min(selectedCells.start.x, selectedCells.end.x),
+                y: Math.min(selectedCells.start.y, selectedCells.end.y)
+            },
+            end: {
+                x: Math.max(selectedCells.start.x, selectedCells.end.x),
+                y: Math.max(selectedCells.start.y, selectedCells.end.y)
+            }
+        }
+        const overlapStartX = Math.max(normalizedMergedCells.start.x, normalizedSelectedCells.start.x);
+        const overlapStartY = Math.max(normalizedMergedCells.start.y, normalizedSelectedCells.start.y);
+        const overlapEndX   = Math.min(normalizedMergedCells.end.x, normalizedSelectedCells.end.x);
+        const overlapEndY   = Math.min(normalizedMergedCells.end.y, normalizedSelectedCells.end.y);
+        if(overlapStartX < overlapEndX && overlapStartY < overlapEndY) {
+            return [
+                ...arr,
+                index,
+            ]
+        }
+        else {
+            return arr
+        }
+    }, [])
+    if(inMergedCells.length > 0) {
         onChange({
             ...spreadsheetData,
-            cells: spreadsheetData.cells.map((row, rowIndex) => (
-                row.map((col, colIndex) => (
-                    checkIsInsideSelectedCells({
-                        coordinate: {
-                            x: colIndex,
-                            y: rowIndex,
-                        },
-                        selectedCells,
-                    }) ? (
-                        Object.fromEntries(
-                            Object.entries(col).filter(([
-                                key
-                            ]) => (
-                                key !== "expand_x" &&
-                                key !== "expand_y" &&
-                                key !== "from"
-                            ))
-                        )
-                    ) as CellData : col
-                ))
-            ))
+            merged_cells: [
+                ...merged_cells.slice(0, inMergedCells[0]),
+                ...merged_cells.slice(inMergedCells[0] + 1)
+            ]
         })
     }
     else {
-        const expandX = selectedCells.end.x - selectedCells.start.x + 1
-        const expandY = selectedCells.end.y - selectedCells.start.y + 1
         onChange({
             ...spreadsheetData,
-            cells: spreadsheetData.cells.map((row, rowIndex) => row.map((col, colIndex) => (
-                checkIsInsideSelectedCells({
-                    coordinate: {
-                        x: colIndex,
-                        y: rowIndex,
-                    },
-                    selectedCells,
-                })
-            ) ? (
-                isSameCoordinate({
-                    x: selectedCells.start.x,
-                    y: selectedCells.start.y,
-                }, {
-                    x: colIndex,
-                    y: rowIndex,
-                })
-            ) ? {
-                ...(Object.fromEntries(
-                    Object.entries(col).filter(([key]) => (
-                        key !== "expand_x" &&
-                        key !== "expand_y" &&
-                        key !== "from"
-                    ))
-                ) as CellData),
-                ...(expandX > 1 ? {
-                    expand_x: expandX
-                } : {}),
-                ...(expandY > 1 ? {
-                    expand_y: expandY
-                } : {}),
-            } : {
-                ...(Object.fromEntries(
-                    Object.entries(col).filter(([key]) => (
-                        key !== "expand_x" &&
-                        key !== "expand_y" &&
-                        key !== "from"
-                    ))
-                ) as CellData),
-                from: {
-                    x: selectedCells.start.x,
-                    y: selectedCells.start.y,
+            merged_cells: [
+                ...merged_cells,
+                {
+                    start: selectedCells.start,
+                    end: selectedCells.end,
                 }
-            } : col))
+            ]
         })
-        setDraggingStartCell({
-            x: selectedCells.start.x,
-            y: selectedCells.start.y,
-        })
+        setDraggingStartCell(selectedCells.start)
     }
 }
 
