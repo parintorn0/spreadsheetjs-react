@@ -1,6 +1,6 @@
 import type { Style, CellData, Border } from "../Spreadsheet.interface"
 import type { DeleteImageProps, FontDecrementProps, FontIncrementProps, InsertImageProps, MergeCellsProps, SetBackgroundColorProps, SetBoldProps, SetBorderProps, SetFontColorProps, SetFontSizeProps, SetTextAlignProps, SetTextVerticalAlignProps } from "./Toolbar.util.interface"
-import { checkIsInsideSelectedCells, isSameCoordinate } from "../Spreadsheet.util"
+import { checkIsInsideSelectedCells } from "../Spreadsheet.util"
 
 export const setTextAlign = ({
     spreadsheetData,
@@ -332,102 +332,42 @@ export const mergeCells = ({
     selectedCells,
     setDraggingStartCell,
 }: MergeCellsProps) => {
-    const hadMergeCell = spreadsheetData.cells.some((row, rowIndex) => (
-        row.some((col, colIndex) => (
-            (
-                Object.hasOwn(col, "expand_x") ||
-                Object.hasOwn(col, "expand_y") ||
-                Object.hasOwn(col, "from")
-            ) && (
-                checkIsInsideSelectedCells({
-                    coordinate: {
-                        x: colIndex,
-                        y: rowIndex,
-                    },
-                    selectedCells,
-                })
-            )
-        ))
-    ))
-    if(hadMergeCell) {
+    const { merged_cells } = spreadsheetData
+    const inMergedCells = merged_cells.reduce<Array<number>>((arr, mergedCellRange, index) => {
+        if(
+            selectedCells.start.x <= mergedCellRange.start.x &&
+            mergedCellRange.start.x <= selectedCells.end.x &&
+            selectedCells.start.y <= mergedCellRange.start.y &&
+            mergedCellRange.start.y <= selectedCells.end.y
+        ) {
+            return [
+                ...arr,
+                index,
+            ]
+        }
+        return arr
+    }, [])
+    if(inMergedCells.length > 0) {
         onChange({
             ...spreadsheetData,
-            cells: spreadsheetData.cells.map((row, rowIndex) => (
-                row.map((col, colIndex) => (
-                    checkIsInsideSelectedCells({
-                        coordinate: {
-                            x: colIndex,
-                            y: rowIndex,
-                        },
-                        selectedCells,
-                    }) ? (
-                        Object.fromEntries(
-                            Object.entries(col).filter(([
-                                key
-                            ]) => (
-                                key !== "expand_x" &&
-                                key !== "expand_y" &&
-                                key !== "from"
-                            ))
-                        )
-                    ) as CellData : col
-                ))
-            ))
+            merged_cells: merged_cells.filter((_, index) => !inMergedCells.includes(index))
         })
     }
-    else {
-        const expandX = selectedCells.end.x - selectedCells.start.x + 1
-        const expandY = selectedCells.end.y - selectedCells.start.y + 1
+    else if(!(
+        selectedCells.start.x === selectedCells.end.x &&
+        selectedCells.start.y === selectedCells.end.y
+    )) {
         onChange({
             ...spreadsheetData,
-            cells: spreadsheetData.cells.map((row, rowIndex) => row.map((col, colIndex) => (
-                checkIsInsideSelectedCells({
-                    coordinate: {
-                        x: colIndex,
-                        y: rowIndex,
-                    },
-                    selectedCells,
-                })
-            ) ? (
-                isSameCoordinate({
-                    x: selectedCells.start.x,
-                    y: selectedCells.start.y,
-                }, {
-                    x: colIndex,
-                    y: rowIndex,
-                })
-            ) ? {
-                ...(Object.fromEntries(
-                    Object.entries(col).filter(([key]) => (
-                        key !== "expand_x" &&
-                        key !== "expand_y" &&
-                        key !== "from"
-                    ))
-                ) as CellData),
-                ...(expandX > 1 ? {
-                    expand_x: expandX
-                } : {}),
-                ...(expandY > 1 ? {
-                    expand_y: expandY
-                } : {}),
-            } : {
-                ...(Object.fromEntries(
-                    Object.entries(col).filter(([key]) => (
-                        key !== "expand_x" &&
-                        key !== "expand_y" &&
-                        key !== "from"
-                    ))
-                ) as CellData),
-                from: {
-                    x: selectedCells.start.x,
-                    y: selectedCells.start.y,
+            merged_cells: [
+                ...merged_cells,
+                {
+                    start: selectedCells.start,
+                    end: selectedCells.end,
                 }
-            } : col))
+            ]
         })
-        setDraggingStartCell({
-            x: selectedCells.start.x,
-            y: selectedCells.start.y,
-        })
+        setDraggingStartCell(selectedCells.start)
     }
 }
 

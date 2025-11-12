@@ -28,12 +28,33 @@ const Cell = ({
     const [isHover, setIsHover] =  useState(false)
 
     const { value, style, image } = cell
-    const { rows_height, cols_width } = spreadsheetData
+    const { rows_height, cols_width, merged_cells } = spreadsheetData
+
+    const inMergedCell = merged_cells.filter(
+        mergedCellRange => (
+            mergedCellRange.start.x <= coordinate.x &&
+            coordinate.x <= mergedCellRange.end.x &&
+            mergedCellRange.start.y <= coordinate.y &&
+            coordinate.y <= mergedCellRange.end.y
+        )
+    )[0]
+    const isStartOfMergedCell = inMergedCell && (
+        coordinate.x === inMergedCell.start.x &&
+        coordinate.y === inMergedCell.start.y
+    )
+    const isInAndNotStartOfMergedCell = inMergedCell && (
+        coordinate.x !== inMergedCell.start.x ||
+        coordinate.y !== inMergedCell.start.y
+    )
+
+    const expandX = isStartOfMergedCell && inMergedCell.end.x - inMergedCell.start.x + 1 || 1
+    const expandY = isStartOfMergedCell && inMergedCell.end.y - inMergedCell.start.y + 1 || 1
+
     const height = rows_height.reduce((acc, h, i) => ((
-        i >= coordinate.y && i < coordinate.y + (cell.expand_y || 1)
+        i >= coordinate.y && i < coordinate.y + expandY
     ) ? acc + h : acc), 0)
     const width = cols_width.reduce((acc, w, i) => ((
-        i >= coordinate.x && i < coordinate.x + (cell.expand_x || 1)
+        i >= coordinate.x && i < coordinate.x + expandX
     ) ? acc + w : acc), 0)
 
     const isInsideSelectedCells = checkIsInsideSelectedCells({coordinate, selectedCells})
@@ -113,19 +134,19 @@ const Cell = ({
         isInsideSelectedCells && !viewOnlyMode ? (
             "1px solid black"
         ) : (
-            cell.expand_y && spreadsheetData.cells[coordinate.y + cell.expand_y - 1][coordinate.x].style?.border?.bottom ? (
+            (inMergedCell && isStartOfMergedCell) && spreadsheetData.cells[coordinate.y + expandY - 1][coordinate.x].style?.border?.bottom ? (
                 `${
-                    spreadsheetData.cells[coordinate.y + cell.expand_y - 1][coordinate.x].style?.border?.bottom?.width
+                    spreadsheetData.cells[coordinate.y + expandY - 1][coordinate.x].style?.border?.bottom?.width
                 }px ${
-                    spreadsheetData.cells[coordinate.y + cell.expand_y - 1][coordinate.x].style?.border?.bottom?.style
+                    spreadsheetData.cells[coordinate.y + expandY - 1][coordinate.x].style?.border?.bottom?.style
                 } rgba(${
-                    spreadsheetData.cells[coordinate.y + cell.expand_y - 1][coordinate.x].style?.border?.bottom?.color.r
+                    spreadsheetData.cells[coordinate.y + expandY - 1][coordinate.x].style?.border?.bottom?.color.r
                 }, ${
-                    spreadsheetData.cells[coordinate.y + cell.expand_y - 1][coordinate.x].style?.border?.bottom?.color.g
+                    spreadsheetData.cells[coordinate.y + expandY - 1][coordinate.x].style?.border?.bottom?.color.g
                 }, ${
-                    spreadsheetData.cells[coordinate.y + cell.expand_y - 1][coordinate.x].style?.border?.bottom?.color.b
+                    spreadsheetData.cells[coordinate.y + expandY - 1][coordinate.x].style?.border?.bottom?.color.b
                 }, ${
-                    spreadsheetData.cells[coordinate.y + cell.expand_y - 1][coordinate.x].style?.border?.bottom?.color.a
+                    spreadsheetData.cells[coordinate.y + expandY - 1][coordinate.x].style?.border?.bottom?.color.a
                 })`
             ) : (
                 "1px solid transparent"
@@ -138,19 +159,19 @@ const Cell = ({
         isInsideSelectedCells && !viewOnlyMode ? (
             "1px solid black"
         ) : (
-            cell.expand_x && spreadsheetData.cells[coordinate.y][coordinate.x + cell.expand_x - 1].style?.border?.right ? (
+            (inMergedCell && isStartOfMergedCell) && spreadsheetData.cells[coordinate.y][coordinate.x + expandX - 1].style?.border?.right ? (
                 `${
-                    spreadsheetData.cells[coordinate.y][coordinate.x + cell.expand_x - 1].style?.border?.right?.width
+                    spreadsheetData.cells[coordinate.y][coordinate.x + expandX - 1].style?.border?.right?.width
                 }px ${
-                    spreadsheetData.cells[coordinate.y][coordinate.x + cell.expand_x - 1].style?.border?.right?.style
+                    spreadsheetData.cells[coordinate.y][coordinate.x + expandX - 1].style?.border?.right?.style
                 } rgba(${
-                    spreadsheetData.cells[coordinate.y][coordinate.x + cell.expand_x - 1].style?.border?.right?.color.r
+                    spreadsheetData.cells[coordinate.y][coordinate.x + expandX - 1].style?.border?.right?.color.r
                 }, ${
-                    spreadsheetData.cells[coordinate.y][coordinate.x + cell.expand_x - 1].style?.border?.right?.color.g
+                    spreadsheetData.cells[coordinate.y][coordinate.x + expandX - 1].style?.border?.right?.color.g
                 }, ${
-                    spreadsheetData.cells[coordinate.y][coordinate.x + cell.expand_x - 1].style?.border?.right?.color.b
+                    spreadsheetData.cells[coordinate.y][coordinate.x + expandX - 1].style?.border?.right?.color.b
                 }, ${
-                    spreadsheetData.cells[coordinate.y][coordinate.x + cell.expand_x - 1].style?.border?.right?.color.a
+                    spreadsheetData.cells[coordinate.y][coordinate.x + expandX - 1].style?.border?.right?.color.a
                 })`
             ) : (
                 "1px solid transparent"
@@ -167,10 +188,10 @@ const Cell = ({
         } ${
             (isInsideSelectedCells && !viewOnlyMode) && "selected" || ""
         } ${
-            cell?.from && "hidden" || ""
+            isInAndNotStartOfMergedCell && "hidden" || ""
         }`}
-        colSpan={cell.expand_x || 1}
-        rowSpan={cell.expand_y || 1}
+        colSpan={expandX}
+        rowSpan={expandY}
         style={{
             fontSize: style?.font_size ? `${style.font_size}px` : "14px",
             backgroundColor: style?.background_color ? (

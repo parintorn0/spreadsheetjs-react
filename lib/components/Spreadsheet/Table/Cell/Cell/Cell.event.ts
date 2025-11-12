@@ -53,7 +53,7 @@ export const cellStartDragging = ({
             start: coordinate,
             end: coordinate,
         },
-        cells: spreadsheetData.cells,
+        mergedCells: spreadsheetData.merged_cells,
     })
     setIsDragging(true)
     setDraggingStartCell(selection.start)
@@ -79,7 +79,7 @@ export const cellDragging = ({
                     y: Math.max(coordinate.y, draggingStartCell.y),
                 },
             },
-            cells: spreadsheetData.cells,
+            mergedCells: spreadsheetData.merged_cells,
         }))
     }
 }

@@ -1,7 +1,8 @@
-import type { CellData, Coordinate, SelectedCells, SpreadsheetData } from "../Spreadsheet.interface";
+import type { CellData, CellRange, Coordinate, SelectedCells, SpreadsheetData } from "../Spreadsheet.interface";
 
 export interface StartDraggingPropsStructure {
-    cells: Array<Array<CellData>>,
+    cells: Array<Array<CellData>>
+    mergedCells: Array<CellRange>
     setIsDragging: React.Dispatch<React.SetStateAction<boolean>>,
     setDraggingStartCell: React.Dispatch<React.SetStateAction<Coordinate>>,
     setSelectedCells: React.Dispatch<React.SetStateAction<SelectedCells>>,
@@ -13,14 +14,17 @@ export interface StartDraggingProps extends StartDraggingPropsStructure {
 export interface AllStartDraggingProps extends StartDraggingPropsStructure {}
 
 export interface DraggingPropsStructure {
-    cells: Array<Array<CellData>>,
+    cells: Array<Array<CellData>>
+    mergedCells: Array<CellRange>
     isDragging: boolean,
     setSelectedCells: React.Dispatch<React.SetStateAction<SelectedCells>>,
 }
 export interface DraggingProps extends DraggingPropsStructure {
     selectedCells: SelectedCells,
 }
-export interface AllDraggingProps extends DraggingPropsStructure {}
+export interface AllDraggingProps extends DraggingPropsStructure {
+    cells: Array<Array<CellData>>
+}
 
 
 interface ResizeProps {

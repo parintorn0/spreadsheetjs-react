@@ -4,6 +4,7 @@ import type { ColumnDraggingProps, ColumnStartDraggingProps } from "./ColumnCell
 export const columnStartDragging = ({
     columnIndex,
     cells,
+    mergedCells,
     setIsDragging,
     setDraggingStartCell,
     setSelectedCells,
@@ -20,6 +21,7 @@ export const columnStartDragging = ({
             },
         },
         cells,
+        mergedCells,
         setIsDragging,
         setDraggingStartCell,
         setSelectedCells,
@@ -30,6 +32,7 @@ export const columnStartDragging = ({
 export const columnDragging = ({
     columnIndex,
     cells,
+    mergedCells,
     isDragging,
     setSelectedCells,
     draggingStartCell,
@@ -46,6 +49,7 @@ export const columnDragging = ({
             },
         },
         cells,
+        mergedCells,
         isDragging,
         setSelectedCells,
     })

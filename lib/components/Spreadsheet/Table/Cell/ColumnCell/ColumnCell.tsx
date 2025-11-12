@@ -51,7 +51,7 @@ const ColumnCell = ({
         setIsResizingColumn(false)
         setResizingColumn(null)
     }
-    
+
     const onMouseDown = (e: React.MouseEvent) => {
         const checkRightClick = () => {
             if ("which" in e) {
@@ -76,6 +76,7 @@ const ColumnCell = ({
                 columnStartDragging({
                     columnIndex,
                     cells: spreadsheetData.cells,
+                    mergedCells: spreadsheetData.merged_cells,
                     setIsDragging,
                     setDraggingStartCell,
                     setSelectedCells,
@@ -119,6 +120,7 @@ const ColumnCell = ({
             columnDragging({
                 columnIndex,
                 cells,
+                mergedCells: spreadsheetData.merged_cells,
                 isDragging,
                 setSelectedCells,
                 draggingStartCell,
