@@ -146,6 +146,12 @@ style="display:flex;align-items:center;gap:4px;"
   <img height=18 src=".assets/checklist-svgrepo-com.svg">
   Insert Row & Column
 </div>
+<div
+style="display:flex;align-items:center;gap:4px;"
+>
+  <img height=18 src=".assets/checklist-svgrepo-com.svg">
+  Rotate Cell
+</div>
 
 ## v3.x Features
 Entirely depend on <a href="https://github.com/parintorn0/speedysheet"><b>speedysheet</b></a> to port to other web framework

@@ -1,5 +1,5 @@
 import type { Style, CellData, Border } from "../Spreadsheet.interface"
-import type { DeleteImageProps, FontDecrementProps, FontIncrementProps, InsertImageProps, MergeCellsProps, SetBackgroundColorProps, SetBoldProps, SetBorderProps, SetFontColorProps, SetFontSizeProps, SetTextAlignProps, SetTextVerticalAlignProps } from "./Toolbar.util.interface"
+import type { DeleteImageProps, FontDecrementProps, FontIncrementProps, InsertImageProps, MergeCellsProps, RotateAntiClockwiseProps, RotateClockwiseProps, SetBackgroundColorProps, SetBoldProps, SetBorderProps, SetFontColorProps, SetFontSizeProps, SetTextAlignProps, SetTextVerticalAlignProps } from "./Toolbar.util.interface"
 import { checkIsInsideSelectedCells } from "../Spreadsheet.util"
 
 export const setTextAlign = ({
@@ -177,7 +177,16 @@ export const setBorder = ({
             })
             break;
         case "all":
-            const borderAll = {
+            const borderAll: {
+                width: number,
+                style: string,
+                color: {
+                    r: number,
+                    g: number,
+                    b: number,
+                    a: number,
+                }
+            } = {
                 width: borderWidth,
                 style: borderStyle,
                 color: borderColor,
@@ -443,6 +452,64 @@ export const fontDecrement = ({
                     ...col.style,
                     font_size: (col.style?.font_size ?? 14) - 1,
                 },
+            }) : col
+        )))
+    })
+}
+
+export const rotateClockwise = ({
+    spreadsheetData,
+    onChange,
+    selectedCells,
+}: RotateClockwiseProps) => {
+    onChange({
+        ...spreadsheetData,
+        cells: spreadsheetData.cells.map((row, rowIndex) => row.map((col, colIndex) => (
+            checkIsInsideSelectedCells({
+                coordinate: {
+                    x: colIndex,
+                    y: rowIndex,
+                },
+                selectedCells,
+            }) ? ({
+                ...col,
+                style: Object.fromEntries(
+                    Object.entries({
+                        ...col.style,
+                        rotate: ((col.style?.rotate || 0) + 45) % 360,
+                    }).filter(([key, value]) => (
+                        !(key === "rotate" && value === 0)
+                    ))
+                ) as Style
+            }) : col
+        )))
+    })
+}
+
+export const rotateAntiClockwise = ({
+    spreadsheetData,
+    onChange,
+    selectedCells,
+}: RotateAntiClockwiseProps) => {
+    onChange({
+        ...spreadsheetData,
+        cells: spreadsheetData.cells.map((row, rowIndex) => row.map((col, colIndex) => (
+            checkIsInsideSelectedCells({
+                coordinate: {
+                    x: colIndex,
+                    y: rowIndex,
+                },
+                selectedCells,
+            }) ? ({
+                ...col,
+                style: Object.fromEntries(
+                    Object.entries({
+                        ...col.style,
+                        rotate: ((col.style?.rotate || 0) - 45 + 360) % 360,
+                    }).filter(([key, value]) => (
+                        !(key === "rotate" && value === 0)
+                    ))
+                ) as Style
             }) : col
         )))
     })
