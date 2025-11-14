@@ -51,6 +51,40 @@ export const insertRow = ({
                 )
             ),
         ],
+        merged_cells: spreadsheetData.merged_cells.map(({start, end}) => ({
+            start: {
+                ...start,
+                y: after ? (
+                    start.y > selectedCells.end.y ? (
+                        start.y + 1
+                    ) : (
+                        start.y
+                    )
+                ) : (
+                    start.y >= selectedCells.start.y ? (
+                        start.y + 1
+                    ) : (
+                        start.y
+                    )
+                ),
+            },
+            end: {
+                ...end,
+                y: after ? (
+                    start.y > selectedCells.end.y ? (
+                        end.y + 1
+                    ) : (
+                        end.y
+                    )
+                ) : (
+                    start.y >= selectedCells.start.y ? (
+                        end.y + 1
+                    ) : (
+                        end.y
+                    )
+                ),
+            }
+        }))
     })
     if(!after) {
         setSelectedCells(spreadsheetData => ({
@@ -91,19 +125,9 @@ export const insertColumn = ({
             { value: "" },
             ...(
                 after ? (
-                    row.slice(selectedCells.end.x + 1, row.length)
+                    row.slice(selectedCells.end.x + 1)
                 ) : (
-                    row.slice(selectedCells.start.x, row.length).map((
-                        col
-                    ) => (
-                        col.from ? {
-                            ...col,
-                            from: {
-                                ...col.from,
-                                x: col.from.x + 1
-                            }
-                        } : col
-                    ))
+                    row.slice(selectedCells.start.x)
                 )
             ),
         ])),
@@ -118,12 +142,46 @@ export const insertColumn = ({
             100,
             ...(
                 after ? (
-                    spreadsheetData.cols_width.slice(selectedCells.end.x + 1, spreadsheetData.cols_width.length)
+                    spreadsheetData.cols_width.slice(selectedCells.end.x + 1)
                 ) : (
-                    spreadsheetData.cols_width.slice(selectedCells.start.x, spreadsheetData.cols_width.length)
+                    spreadsheetData.cols_width.slice(selectedCells.start.x)
                 )
             ),
-        ]
+        ],
+        merged_cells: spreadsheetData.merged_cells.map(({start, end}) => ({
+            start: {
+                ...start,
+                x: after ? (
+                    start.x >= selectedCells.end.x ? (
+                        start.x + 1
+                    ) : (
+                        start.x
+                    )
+                ) : (
+                    start.x >= selectedCells.start.x ? (
+                        start.x + 1
+                    ) : (
+                        start.x
+                    )
+                ),
+            },
+            end: {
+                ...end,
+                x: after ? (
+                    start.x >= selectedCells.end.x ? (
+                        end.x + 1
+                    ) : (
+                        end.x
+                    )
+                ) : (
+                    start.x >= selectedCells.start.x ? (
+                        end.x + 1
+                    ) : (
+                        end.x
+                    )
+                ),
+            }
+        }))
     })
     if(!after) {
         setSelectedCells(spreadsheetData => ({
@@ -154,20 +212,30 @@ export const deleteColumn = ({
         ...spreadsheetData,
         cells: spreadsheetData.cells.map(row => row.length > 1 ? [
             ...row.slice(0, selectedCells.start.x),
-            ...row.slice(selectedCells.end.x + 1, row.length).map(cell => ({
-                ...cell,
-                ...(cell.from && {
-                    from: {
-                        ...cell.from,
-                        x: cell.from.x - 1
-                    }
-                })
-            })),
+            ...row.slice(selectedCells.end.x + 1, row.length),
         ] : row),
         cols_width: spreadsheetData.cols_width.length > 1 ? [
             ...spreadsheetData.cols_width.slice(0, selectedCells.start.x),
             ...spreadsheetData.cols_width.slice(selectedCells.end.x + 1, spreadsheetData.cols_width.length),
         ] : spreadsheetData.cols_width,
+        merged_cells: spreadsheetData.merged_cells.map(({start, end}) => ({
+            start: {
+                ...start,
+                x: start.x >= selectedCells.end.x ? (
+                    start.x - 1
+                ) : (
+                    start.x
+                )
+            },
+            end: {
+                ...end,
+                x: start.x >= selectedCells.end.x ? (
+                    end.x - 1
+                ) : (
+                    end.x
+                )
+            }
+        }))
     })
     setSelectedCells(spreadsheetData => ({
         start: {
@@ -196,20 +264,30 @@ export const deleteRow = ({
         ...spreadsheetData,
         cells: [
             ...spreadsheetData.cells.slice(0, selectedCells.start.y),
-            ...spreadsheetData.cells.slice(selectedCells.end.y + 1, spreadsheetData.cells.length).map(row => row.map(cell => ({
-                ...cell,
-                ...(cell.from && {
-                    from: {
-                        ...cell.from,
-                        y: cell.from.y - 1
-                    }
-                })
-            }))),
+            ...spreadsheetData.cells.slice(selectedCells.end.y + 1, spreadsheetData.cells.length),
         ],
         rows_height:[
             ...spreadsheetData.rows_height.slice(0, selectedCells.start.y),
             ...spreadsheetData.rows_height.slice(selectedCells.end.y + 1, spreadsheetData.rows_height.length),
         ],
+        merged_cells: spreadsheetData.merged_cells.map(({start, end}) => ({
+            start: {
+                ...start,
+                y: start.y >= selectedCells.end.y ? (
+                    start.y - 1
+                ) : (
+                    start.y
+                )
+            },
+            end: {
+                ...end,
+                y: start.y >= selectedCells.end.y ? (
+                    end.y - 1
+                ) : (
+                    end.y
+                )
+            }
+        }))
     })
     setSelectedCells(spreadsheetData => ({
         start: {

@@ -24,7 +24,7 @@ const Cell = ({
     preAddImage,
 }: CellProps) => {
 
-    const inputRef = useRef<HTMLInputElement>(null)
+    const inputRef = useRef<HTMLTextAreaElement>(null)
     const [isHover, setIsHover] =  useState(false)
 
     const { value, style, image } = cell
@@ -270,27 +270,35 @@ const Cell = ({
         }}
         >
             {image?.path ? (
-                <img
-                    src={image.path}
-                    alt="cell-img"
-                    style={{
-                        height: `${height - 4}px`,
-                        width: `${width - 4}px`,
-                        objectFit: "contain",
-                        pointerEvents: "none",
-                        userSelect: "none",
-                    }}
-                />
+                <div
+                    className={Class.value}
+                    style={cell.style?.rotate && {
+                        rotate: `${cell.style?.rotate}deg`
+                    } || undefined}
+                >
+                    <img
+                        src={image.path}
+                        alt="cell-img"
+                        style={{
+                            height: `${height - 4}px`,
+                            width: `${width - 4}px`,
+                            objectFit: "contain",
+                            pointerEvents: "none",
+                            userSelect: "none",
+                        }}
+                    />
+                </div>
             ) : (
                 isSameCoordinate(coordinate, editingCell) && !viewOnlyMode && (typeof value === "string")
             ) ? (
-                <input
+                <textarea
                     ref={inputRef}
-                    type="text"
                     value={value}
                     style={{
-                        height: `${height - 4}px`,
-                        width: `${width - 4}px`,
+                        display:"flex",
+                        resize: "none",
+                        height: "inherit",
+                        width: "inherit",
                         fontSize: style?.font_size ? `${style.font_size}px` : "14px",
                     }}
                     onChange={(e) => cellValueChanged({
