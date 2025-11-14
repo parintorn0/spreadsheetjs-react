@@ -428,39 +428,50 @@ const Spreadsheet = ({
         editingCell,
     ])
 
-    // const canInsertRowAbove = !cells[selectedCells.start.y].some(cell => cell.from && cell.from.y < selectedCells.start.y)
-    const canInsertRowAbove = cells[selectedCells.start.y].every((_, cellIndex) => !merged_cells.some(mergedCellRange => (
-        mergedCellRange.start.x <= cellIndex &&
-        cellIndex <= mergedCellRange.end.x &&
-        mergedCellRange.start.y <= selectedCells.start.y &&
-        selectedCells.start.y <= mergedCellRange.end.y &&
-        mergedCellRange.start.x !== cellIndex &&
-        mergedCellRange.start.y !== selectedCells.start.y
-    )))
-    const canInsertRowBelow = cells[selectedCells.end.y].every((_, cellIndex) => !merged_cells.some(mergedCellRange => (
-        mergedCellRange.start.x <= cellIndex &&
-        cellIndex <= mergedCellRange.end.x &&
-        mergedCellRange.start.y <= selectedCells.end.y &&
-        selectedCells.end.y <= mergedCellRange.end.y &&
-        mergedCellRange.end.x !== cellIndex &&
-        mergedCellRange.end.y !== selectedCells.end.y
-    )))
-    const canInsertColumnBefore = cells.every((_, rowIndex) => !merged_cells.some(mergedCellRange => (
-        mergedCellRange.start.x <= selectedCells.start.x &&
-        selectedCells.start.x <= mergedCellRange.end.x &&
-        mergedCellRange.start.y <= rowIndex &&
-        rowIndex <= mergedCellRange.end.y &&
-        mergedCellRange.start.x !== selectedCells.start.x &&
-        mergedCellRange.start.y !== rowIndex
-    )))
-    const canInsertColumnAfter = cells.every((_, rowIndex) => !merged_cells.some(mergedCellRange => (
-        mergedCellRange.start.x <= selectedCells.end.x &&
-        selectedCells.end.x <= mergedCellRange.end.x &&
-        mergedCellRange.start.y <= rowIndex &&
-        rowIndex <= mergedCellRange.end.y &&
-        mergedCellRange.end.x !== selectedCells.end.x &&
-        mergedCellRange.end.y !== rowIndex
-    )))
+    const canInsertRowAbove = !cells.some((row, rowIndex) => (
+        row.some((_, cellIndex) => (
+            selectedCells.start.y === rowIndex &&
+            merged_cells.some(mergedCellRange => (
+                mergedCellRange.start.y <= rowIndex &&
+                rowIndex <= mergedCellRange.end.y &&
+                mergedCellRange.start.x !== cellIndex &&
+                mergedCellRange.start.y !== rowIndex
+            ))
+        ))
+    ))
+    const canInsertRowBelow = !cells.some((row, rowIndex) => (
+        row.some((_, cellIndex) => (
+            selectedCells.end.y === rowIndex &&
+            merged_cells.some(mergedCellRange => (
+                mergedCellRange.start.y <= rowIndex &&
+                rowIndex <= mergedCellRange.end.y &&
+                mergedCellRange.end.x !== cellIndex &&
+                mergedCellRange.end.y !== rowIndex
+            ))
+        ))
+    ))
+    const canInsertColumnBefore = !cells.some((row, rowIndex) => (
+        row.some((_, cellIndex) => (
+            selectedCells.start.x === cellIndex &&
+            merged_cells.some(mergedCellRange => (
+                mergedCellRange.start.x <= cellIndex &&
+                cellIndex <= mergedCellRange.end.x &&
+                mergedCellRange.start.x !== cellIndex &&
+                mergedCellRange.start.y !== rowIndex
+            ))
+        ))
+    ))
+    const canInsertColumnAfter = !cells.some((row, rowIndex) => (
+        row.some((_, cellIndex) => (
+            selectedCells.end.x === cellIndex &&
+            merged_cells.some(mergedCellRange => (
+                mergedCellRange.start.x <= cellIndex &&
+                cellIndex <= mergedCellRange.end.x &&
+                mergedCellRange.end.x !== cellIndex &&
+                mergedCellRange.end.y !== rowIndex
+            ))
+        ))
+    ))
     const canDeleteRow = !cells.some((row, rowIndex) => (
         selectedCells.start.y <= rowIndex &&
         rowIndex <= selectedCells.end.y &&

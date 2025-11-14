@@ -136,31 +136,42 @@ const Table = ({
                                 setSelectedCells,
                             })}
                             />
-                            {cols_width.map((_, i) => (
-                                <ColumnCell
-                                key={String.fromCharCode(65 + i)}
-                                columnIndex={i}
-                                spreadsheetData={spreadsheetData}
-                                onChange={onChange}
-                                isDragging={isDragging}
-                                setIsDragging={setIsDragging}
-                                draggingStartCell={draggingStartCell}
-                                setDraggingStartCell={setDraggingStartCell}
-                                selectedCells={selectedCells}
-                                setSelectedCells={setSelectedCells}
-                                cells={cells}
-                                edgeThreshold={edgeThreshold}
-                                contextMenuRef={columnCellContextMenuRef}
-                                setIsContextMenuOpen={setIsColumnCellContextMenuOpen}
-                                />
-                            ))}
+                            {cols_width.map((_, i) => {
+                                const key = (() => {
+                                    const findKey = (index: number): string => (
+                                        index < 0 ? "" : (
+                                            findKey(Math.floor(index / 26) - 1) + String.fromCharCode(65 + (index % 26))
+                                        )
+                                    )
+                                    return findKey(i)
+                                })()
+
+                                return (
+                                    <ColumnCell
+                                        key={key}
+                                        columnIndex={i}
+                                        spreadsheetData={spreadsheetData}
+                                        onChange={onChange}
+                                        isDragging={isDragging}
+                                        setIsDragging={setIsDragging}
+                                        draggingStartCell={draggingStartCell}
+                                        setDraggingStartCell={setDraggingStartCell}
+                                        selectedCells={selectedCells}
+                                        setSelectedCells={setSelectedCells}
+                                        cells={cells}
+                                        edgeThreshold={edgeThreshold}
+                                        contextMenuRef={columnCellContextMenuRef}
+                                        setIsContextMenuOpen={setIsColumnCellContextMenuOpen}
+                                    />
+                                )
+                            })}
                         </tr>
                     </thead>
                 )}
                 <tbody>
                     {cells.map((row, rowIndex) => (
                         <tr
-                        key={rowIndex}
+                        key={rowIndex + 1}
                         style={{
                             height: `${rows_height[rowIndex]}px`
                         }}
@@ -182,30 +193,40 @@ const Table = ({
                                 setIsContextMenuOpen={setIsRowCellContextMenuOpen}
                                 />
                             )}
-                            {row.map((_, colIndex) => (
-                                <Cell
-                                key={`${String.fromCharCode(65 + colIndex)}${rowIndex}`}
-                                cell={cells[rowIndex][colIndex]}
-                                coordinate={{
-                                    x: colIndex,
-                                    y: rowIndex,
-                                }}
-                                viewOnlyMode={viewOnlyMode}
-                                editingCell={editingCell}
-                                setEditingCell={setEditingCell}
-                                spreadsheetData={spreadsheetData}
-                                onChange={onChange}
-                                isDragging={isDragging}
-                                setIsDragging={setIsDragging}
-                                draggingStartCell={draggingStartCell}
-                                setDraggingStartCell={setDraggingStartCell}
-                                selectedCells={selectedCells}
-                                setSelectedCells={setSelectedCells}
-                                contextMenuRef={cellContextMenuRef}
-                                setIsContextMenuOpen={setIsCellContextMenuOpen}
-                                preAddImage={preAddImage}
-                                />
-                            ))}
+                            {row.map((_, colIndex) => {
+                                const key = (() => {
+                                    const findKey = (index: number): string => (
+                                        index < 0 ? "" : (
+                                            findKey(Math.floor(index / 26) - 1) + String.fromCharCode(65 + (index % 26))
+                                        )
+                                    )
+                                    return findKey(colIndex)
+                                })()
+                                return (
+                                    <Cell
+                                        key={`${key}${rowIndex + 1}`}
+                                        cell={cells[rowIndex][colIndex]}
+                                        coordinate={{
+                                            x: colIndex,
+                                            y: rowIndex,
+                                        }}
+                                        viewOnlyMode={viewOnlyMode}
+                                        editingCell={editingCell}
+                                        setEditingCell={setEditingCell}
+                                        spreadsheetData={spreadsheetData}
+                                        onChange={onChange}
+                                        isDragging={isDragging}
+                                        setIsDragging={setIsDragging}
+                                        draggingStartCell={draggingStartCell}
+                                        setDraggingStartCell={setDraggingStartCell}
+                                        selectedCells={selectedCells}
+                                        setSelectedCells={setSelectedCells}
+                                        contextMenuRef={cellContextMenuRef}
+                                        setIsContextMenuOpen={setIsCellContextMenuOpen}
+                                        preAddImage={preAddImage}
+                                    />
+                                )
+                            })}
                         </tr>
                     ))}
                 </tbody>

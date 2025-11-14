@@ -92,6 +92,17 @@ const ColumnCell = ({
         setIsContextMenuOpen(true)
     }
 
+    // const key = Array.from<number>({length: Math.floor(columnIndex / 26) + 1}).map((_, index) => String.fromCharCode(65 + (columnIndex % (26 * (index+1))))).join("")
+
+    const key = (() => {
+        const findKey = (index: number): string => (
+            index < 0 ? "" : (
+                findKey(Math.floor(index / 26) - 1) + String.fromCharCode(65 + (index % 26))
+            )
+        )
+        return findKey(columnIndex)
+    })()
+
     useEffect(() => {
         document.addEventListener("mousemove", resizeColumn);
         document.addEventListener("mouseup", stopResizeColumn);
@@ -103,7 +114,7 @@ const ColumnCell = ({
 
     return (
         <td
-        key={String.fromCharCode(65 + columnIndex)}
+        key={key}
         style={{
             backgroundColor: (
                 checkIsInsideSelectedCells({
@@ -137,7 +148,7 @@ const ColumnCell = ({
         }}
         onContextMenu={onContextMenu}
         >
-            {`${String.fromCharCode(65 + columnIndex)}`}
+            {key}
         </td>
     )
 }
